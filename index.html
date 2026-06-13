@@ -7,90 +7,138 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0D2E52;--blue:#185FA5;--blue-l:#E6F1FB;
-  --gold:#C5A028;--green:#3B6D11;--green-l:#EAF3DE;
-  --amber:#854F0B;--amber-l:#FAEEDA;--red:#A32D2D;
+  --navy:#0D2E52;--blue:#185FA5;--blue-m:#378ADD;--blue-l:#E6F1FB;
+  --gold:#C5A028;--gold-l:#FFF8E0;
+  --green:#3B6D11;--green-l:#EAF3DE;
+  --amber:#854F0B;--amber-l:#FAEEDA;
+  --red:#A32D2D;--red-l:#FCEBEB;
+  --purple:#7C3AED;--purple-l:#F3E8FF;
   --dark:#1A1A18;--gray:#666;--muted:#999;
-  --border:#E5E3DC;--surface:#fff;--subtle:#F4F3EF;
-  --r:12px;
+  --surface:#fff;--subtle:#F4F3EF;--border:#E5E3DC;
 }
 html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;background:var(--subtle);color:var(--dark)}
 /* HEADER */
-header{height:56px;background:var(--navy);display:flex;align-items:center;padding:0 24px;gap:14px;flex-shrink:0}
+header{height:52px;background:var(--navy);display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0;position:sticky;top:0;z-index:200}
 .logo{display:flex;align-items:center;gap:10px}
-.logo-badge{background:var(--gold);color:var(--navy);font-weight:800;font-size:13px;padding:3px 10px;border-radius:5px}
-.logo-name{color:#fff;font-weight:600;font-size:15px}
-.header-status{display:flex;align-items:center;gap:6px;margin-left:12px;font-size:11px;color:rgba(255,255,255,0.5)}
-.status-dot{width:7px;height:7px;border-radius:50%;background:#4ADE80;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-.header-right{margin-left:auto;display:flex;gap:10px}
-.header-btn{background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.7);font-size:11px;padding:5px 12px;border-radius:5px;cursor:pointer}
-.header-btn:hover{background:rgba(255,255,255,0.2);color:#fff}
+.logo-badge{background:var(--gold);color:var(--navy);font-weight:800;font-size:12px;padding:3px 9px;border-radius:5px}
+.logo-name{color:#fff;font-weight:600;font-size:14px}
+.hdr-status{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,0.5);margin-left:10px}
+.hdr-dot{width:7px;height:7px;border-radius:50%;background:#4ADE80;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.hdr-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.hdr-btn{background:rgba(255,255,255,0.12);border:none;color:rgba(255,255,255,0.8);font-size:11px;padding:5px 11px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background 0.12s}
+.hdr-btn:hover{background:rgba(255,255,255,0.22);color:#fff}
+.hdr-badge{background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;min-width:16px;text-align:center}
 /* LAYOUT */
-.layout{display:flex;height:calc(100vh - 56px)}
+.layout{display:flex;height:calc(100vh - 52px)}
 /* SIDEBAR */
-.sidebar{width:240px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
-.sidebar-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);padding:16px 16px 8px}
-.conv-item{padding:10px 16px;cursor:pointer;border-radius:0;transition:background 0.1s;display:flex;flex-direction:column;gap:2px;border-bottom:1px solid var(--border)}
-.conv-item.active{background:var(--blue-l)}
-.conv-item:hover:not(.active){background:var(--subtle)}
-.conv-label{font-size:12px;font-weight:500;color:var(--dark)}
-.conv-sub{font-size:10px;color:var(--muted)}
-.conv-new{margin:12px;padding:8px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:auto}
-.conv-new:hover{background:var(--blue)}
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sb-section{padding:12px 14px 4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted)}
+.sb-item{padding:8px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px;border-bottom:0.5px solid var(--border);transition:background 0.1s}
+.sb-item.active{background:var(--blue-l)}
+.sb-item:hover:not(.active){background:var(--subtle)}
+.sb-label{font-size:12px;font-weight:500;color:var(--dark)}
+.sb-sub{font-size:10px;color:var(--muted)}
+.sb-new{margin:12px;padding:8px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:auto}
+.sb-new:hover{background:var(--blue)}
 /* CHAT */
-.chat-area{flex:1;display:flex;flex-direction:column;min-width:0}
-.messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
-/* MESSAGE BUBBLES */
-.msg-row{display:flex;gap:10px;align-items:flex-end;max-width:760px}
+.chat-wrap{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:14px}
+/* BUBBLES */
+.msg-row{display:flex;gap:10px;align-items:flex-end;max-width:800px}
 .msg-row.user{flex-direction:row-reverse;align-self:flex-end}
-.avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
-.avatar.bot{background:var(--navy);color:#fff;font-size:9px}
-.avatar.user{background:var(--gold);color:var(--navy)}
-.bubble{padding:12px 16px;border-radius:18px;max-width:520px;line-height:1.55;font-size:13.5px}
+.av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.av.bot{background:var(--navy);color:#fff;font-size:9px}
+.av.user{background:var(--gold);color:var(--navy);font-size:11px}
+.bubble{padding:11px 15px;border-radius:18px;max-width:560px;line-height:1.55;font-size:13px}
 .bubble.bot{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--dark)}
 .bubble.user{background:var(--navy);color:#fff;border-bottom-right-radius:4px}
 /* TYPING */
 .typing-row{display:flex;gap:10px;align-items:flex-end}
-.typing-bubble{background:var(--surface);border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px;padding:14px 18px;display:flex;gap:5px;align-items:center}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:bounce 1.2s infinite}
-.dot:nth-child(2){animation-delay:.2s}
-.dot:nth-child(3){animation-delay:.4s}
-@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+.typing-bub{background:var(--surface);border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px;padding:13px 16px;display:flex;gap:5px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:bonce 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bonce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
 /* CHIPS */
-.chip-row{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 4px 42px;max-width:760px}
-.chip{background:var(--surface);border:1px solid var(--navy);color:var(--navy);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.12s;white-space:nowrap}
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;padding:0 0 4px 40px;max-width:800px}
+.chip{background:var(--surface);border:1px solid var(--navy);color:var(--navy);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:500;cursor:pointer;transition:all .12s;white-space:nowrap}
 .chip:hover{background:var(--navy);color:#fff}
-/* CARDS */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;max-width:400px;font-size:12px}
-.card-header{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:8px}
-.card-header-icon{font-size:16px}
-.card-header-title{font-weight:600;font-size:13px}
-.card-header-sub{font-size:10px;color:rgba(255,255,255,0.6);margin-top:1px}
-.card-draft{background:var(--amber-l);color:var(--amber);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:auto;white-space:nowrap}
-.card-body{padding:0}
-.card-row{display:flex;padding:8px 16px;border-bottom:1px solid var(--border)}
-.card-row:last-of-type{border-bottom:none}
-.card-lbl{font-size:11px;color:var(--muted);width:90px;flex-shrink:0;padding-top:1px}
-.card-val{font-size:12px;font-weight:500;color:var(--dark)}
-.card-actions{padding:12px 16px;display:flex;gap:8px;border-top:1px solid var(--border);background:var(--subtle)}
-.card-action-primary{background:var(--navy);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:11px;font-weight:600;cursor:pointer}
-.card-action-primary:hover{background:var(--blue)}
-.card-action-sec{background:var(--surface);color:var(--navy);border:1px solid var(--border);border-radius:7px;padding:7px 12px;font-size:11px;cursor:pointer}
-.card-action-sec:hover{background:var(--subtle)}
+/* CARDS IN CHAT */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:420px;font-size:12px}
+.card-hdr{background:var(--navy);color:#fff;padding:11px 14px;display:flex;align-items:center;gap:8px}
+.card-hdr-ico{font-size:15px}
+.card-hdr-title{font-weight:600;font-size:12px}
+.card-hdr-sub{font-size:10px;color:rgba(255,255,255,.6);margin-top:1px}
+.card-draft{background:var(--amber-l);color:var(--amber);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:auto;white-space:nowrap}
+.card-row{display:flex;padding:7px 14px;border-bottom:1px solid var(--border)}
+.card-row:last-of-type{border:none}
+.card-lbl{font-size:10px;color:var(--muted);width:82px;flex-shrink:0;padding-top:1px}
+.card-val{font-size:11px;font-weight:500;color:var(--dark)}
+.card-actions{padding:10px 14px;display:flex;gap:7px;border-top:1px solid var(--border);background:var(--subtle)}
+.card-btn-p{background:var(--navy);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer}
+.card-btn-p:hover{background:var(--blue)}
+.card-btn-s{background:var(--surface);color:var(--navy);border:1px solid var(--border);border-radius:6px;padding:6px 11px;font-size:11px;cursor:pointer}
+/* MINI TABLE IN CHAT */
+.mini-tbl{width:100%;border-collapse:collapse;font-size:11px;max-width:520px}
+.mini-tbl th{background:var(--navy);color:#fff;padding:6px 8px;text-align:left;font-size:10px;font-weight:600;letter-spacing:.3px}
+.mini-tbl td{padding:6px 8px;border-bottom:1px solid var(--border)}
+.mini-tbl tr:last-child td{border:none}
+.mini-tbl tr:nth-child(even) td{background:var(--subtle)}
+.mini-tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:600px}
+/* STATUS BADGES */
+.b{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500}
+.bv{background:var(--blue-l);color:var(--blue)}
+.bs{background:var(--amber-l);color:var(--amber)}
+.bg{background:var(--green-l);color:var(--green)}
+.br{background:var(--red-l);color:var(--red)}
+.bgy{background:#F1EFE8;color:#5F5E5A}
 /* INPUT */
-.input-area{border-top:1px solid var(--border);padding:16px 24px;background:var(--surface);display:flex;gap:10px;align-items:center}
-#chat-input{flex:1;border:1px solid var(--border);border-radius:24px;padding:10px 18px;font-size:13.5px;font-family:inherit;outline:none;color:var(--dark);background:var(--subtle);resize:none;max-height:120px;line-height:1.4}
-#chat-input:focus{border-color:var(--blue);background:#fff}
-#chat-input:disabled{opacity:0.5;cursor:not-allowed}
-#send-btn{width:40px;height:40px;border-radius:50%;background:var(--navy);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.12s}
+.input-area{border-top:1px solid var(--border);padding:14px 20px;background:var(--surface);display:flex;gap:9px;align-items:center}
+#chat-input{flex:1;border:1px solid var(--border);border-radius:22px;padding:9px 16px;font-size:13px;font-family:inherit;outline:none;color:var(--dark);background:var(--subtle);resize:none;max-height:110px;line-height:1.4}
+#chat-input:focus{border-color:var(--blue-m);background:#fff}
+#chat-input:disabled{opacity:.5;cursor:not-allowed}
+#send-btn{width:38px;height:38px;border-radius:50%;background:var(--navy);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 #send-btn:hover{background:var(--blue)}
-#send-btn:disabled{opacity:0.4;cursor:not-allowed}
+#send-btn:disabled{opacity:.4;cursor:not-allowed}
 #send-btn svg{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.input-hint{font-size:10px;color:var(--muted);text-align:center;margin-top:6px}
+.input-hint{font-size:10px;color:var(--muted);text-align:center;margin-top:5px}
+/* RECORDS PANEL */
+.records-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:300;display:none}
+.records-overlay.open{display:block}
+.records-panel{position:fixed;top:0;right:0;bottom:0;width:560px;background:var(--surface);z-index:301;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1)}
+.records-panel.open{transform:translateX(0)}
+.rp-header{background:var(--navy);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.rp-title{font-size:14px;font-weight:600;flex:1}
+.rp-close{background:none;border:none;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;line-height:1}
+.rp-close:hover{color:#fff}
+.rp-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;background:#fff}
+.rp-tab{padding:10px 16px;font-size:12px;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.rp-tab.on{color:var(--navy);border-bottom-color:var(--gold);font-weight:600}
+.rp-body{flex:1;overflow-y:auto;padding:16px}
+.rp-section{margin-bottom:18px}
+.rp-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px}
+.rec-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 14px;margin-bottom:7px;display:flex;align-items:flex-start;gap:10px}
+.rec-icon{width:34px;height:34px;border-radius:8px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:#fff}
+.rec-title{font-size:12px;font-weight:600;color:var(--dark)}
+.rec-meta{font-size:11px;color:var(--gray);margin-top:2px}
+.rec-right{margin-left:auto;text-align:right}
+.rec-status{font-size:10px;font-weight:600}
+.rec-stat-val{font-size:13px;font-weight:700;color:var(--navy);margin-top:2px}
+.new-badge{background:var(--gold-l);color:var(--gold);font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;border:1px solid var(--gold)}
+.press-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.press-tbl th{background:var(--navy);color:#fff;padding:6px 8px;text-align:left;font-size:10px;font-weight:600}
+.press-tbl td{padding:6px 8px;border-bottom:1px solid var(--border)}
+.press-tbl tr:nth-child(even) td{background:var(--subtle)}
+.rp-search{border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:12px;width:100%;margin-bottom:10px;outline:none;font-family:inherit}
+.rp-search:focus{border-color:var(--blue-m)}
+.rp-empty{text-align:center;padding:32px;color:var(--muted);font-size:12px}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat-mini{background:var(--subtle);border-radius:8px;padding:11px 13px;text-align:center}
+.stat-mini-val{font-size:20px;font-weight:700;color:var(--navy)}
+.stat-mini-lbl{font-size:10px;color:var(--muted);margin-top:2px}
 /* SCROLLBAR */
-.messages::-webkit-scrollbar{width:5px}
-.messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.messages::-webkit-scrollbar,.rp-body::-webkit-scrollbar{width:4px}
+.messages::-webkit-scrollbar-thumb,.rp-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 </style>
 </head>
 <body>
@@ -100,506 +148,603 @@ header{height:56px;background:var(--navy);display:flex;align-items:center;paddin
     <span class="logo-badge">PGS</span>
     <span class="logo-name">2.0</span>
   </div>
-  <div class="header-status">
-    <div class="status-dot"></div>
+  <div class="hdr-status">
+    <div class="hdr-dot"></div>
     Digital Publicist &nbsp;·&nbsp; Online
   </div>
-  <div class="header-right">
-    <button class="header-btn" onclick="newConv()">+ New conversation</button>
+  <div class="hdr-right">
+    <button class="hdr-btn" onclick="openRecords('overview')" id="records-btn">
+      📁 Records <span class="hdr-badge" id="records-count">0</span>
+    </button>
+    <button class="hdr-btn" onclick="newConv()">+ New conversation</button>
   </div>
 </header>
 
 <div class="layout">
   <div class="sidebar">
-    <div class="sidebar-title">Recent</div>
-    <div class="conv-item active"><div class="conv-label">New conversation</div><div class="conv-sub">Just now</div></div>
-    <div class="conv-item"><div class="conv-label">TS5 WOM Screening</div><div class="conv-sub">Yesterday</div></div>
-    <div class="conv-item"><div class="conv-label">TS5 Junket setup</div><div class="conv-sub">Jun 3</div></div>
-    <div class="conv-item"><div class="conv-label">Incredibles 4 long lead</div><div class="conv-sub">May 28</div></div>
-    <button class="conv-new" onclick="newConv()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <div class="sb-section">Recent</div>
+    <div class="sb-item active"><div class="sb-label">New conversation</div><div class="sb-sub">Just now</div></div>
+    <div class="sb-item" onclick="openRecords('screening')"><div class="sb-label">TS5 Screenings</div><div class="sb-sub" id="sb-scr-count">3 active</div></div>
+    <div class="sb-item" onclick="openRecords('junket')"><div class="sb-label">TS5 Junket</div><div class="sb-sub">Jun 6 · Pixar</div></div>
+    <div class="sb-item" onclick="openRecords('press')"><div class="sb-label">TS5 Press List</div><div class="sb-sub" id="sb-press-count">25 credentialed</div></div>
+    <button class="sb-new" onclick="newConv()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       New conversation
     </button>
   </div>
 
-  <div class="chat-area">
+  <div class="chat-wrap">
     <div class="messages" id="messages"></div>
     <div class="input-area">
       <textarea id="chat-input" placeholder="Type a message…" rows="1" onkeydown="handleKey(event)" oninput="autosize(this)"></textarea>
-      <button id="send-btn" onclick="sendMessage()" aria-label="Send">
-        <svg width="18" height="18" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      <button id="send-btn" onclick="sendMsg()" aria-label="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
     </div>
     <div class="input-hint">PGS 2.0 · Walt Disney Studios Motion Pictures · Confidential</div>
   </div>
 </div>
 
+<!-- RECORDS PANEL -->
+<div class="records-overlay" id="rp-overlay" onclick="closeRecords()"></div>
+<div class="records-panel" id="records-panel">
+  <div class="rp-header">
+    <span style="font-size:16px">📁</span>
+    <span class="rp-title">PGS Records</span>
+    <span style="font-size:11px;color:rgba(255,255,255,.5)" id="rp-subtitle">Toy Story 5</span>
+    <button class="rp-close" onclick="closeRecords()">&#x2715;</button>
+  </div>
+  <div class="rp-tabs">
+    <div class="rp-tab on" onclick="rpTab('overview',this)">Overview</div>
+    <div class="rp-tab" onclick="rpTab('screening',this)">Screenings</div>
+    <div class="rp-tab" onclick="rpTab('junket',this)">Junkets</div>
+    <div class="rp-tab" onclick="rpTab('press',this)">Press</div>
+  </div>
+  <div class="rp-body" id="rp-body"></div>
+</div>
+
 <script>
-// ── STATE MACHINE ─────────────────────────────────────────────
-let state = 'idle';
-let ctx = {};
+// ══════════════════════════════════════════════════════════
+// DATA STORE  (localStorage-backed)
+// ══════════════════════════════════════════════════════════
+const TS5_SCREENINGS = [
+  { id:'scr1', title:'Toy Story 5', type:'Word of Mouth (WOM)', market:'Los Angeles', theater:'AMC Century City 15', datetime:'Jun 10, 2025 · 7:00 PM', format:'Standard', seats:'250', security:'Yes — full security', status:'confirmed', rsvp:238, submittedAt:'2025-05-28', isPreload:true },
+  { id:'scr2', title:'Toy Story 5', type:'Press', market:'Los Angeles', theater:'ArcLight Hollywood', datetime:'Jun 12, 2025 · 6:30 PM', format:'Dolby Cinema', seats:'120', security:'Minimal / check only', status:'confirmed', rsvp:98, submittedAt:'2025-05-30', isPreload:true },
+  { id:'scr3', title:'Toy Story 5', type:'IMAX Special', market:'Los Angeles', theater:'Universal CityWalk IMAX', datetime:'Jun 14, 2025 · 8:00 PM', format:'IMAX', seats:'400', security:'Yes — full security', status:'confirmed', rsvp:312, submittedAt:'2025-06-01', isPreload:true },
+];
+const TS5_JUNKETS = [
+  { id:'jnk1', title:'Toy Story 5', dates:'June 3–7, 2025', location:'Fairmont San Francisco · Pixar Animation Studios', talent:'Tom Hanks & Tim Allen, Joan Cusack & Tony Hale, Andrew Stanton & Kenna Harris & Lindsey Collins', press_status:'Press list confirmed — 25 outlets', status:'active', submittedAt:'2025-05-15', isPreload:true },
+];
+const TS5_PRESS = [
+  { journalist:'Lawrence Sharma', outlet:'AMCTheatres.com', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Jace Diehl', outlet:'Animated With Jace Diehl', territory:'USA', format:'Specialty', talent:'Andrew Stanton solo', status:'confirmed' },
+  { journalist:'TBD', outlet:'APTV', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Jamie Broadnax', outlet:'Black Girl Nerds', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Wilson Morales', outlet:'BlackFilmAndTV.com', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Trey Mangum', outlet:'Blavity TV', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Carolina Reynoso', outlet:'Buzzfeed Pero Like', territory:'USA', format:'Specialty', talent:'All talent', status:'confirmed' },
+  { journalist:'Law Sharma', outlet:'ComicBook.com', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Denise Reyes', outlet:'Despierta America (Univision)', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Adam Graham', outlet:'Detroit News', territory:'USA', format:'Virtual', talent:'Tim Allen only', status:'confirmed' },
+  { journalist:'Tanya Charry', outlet:'El Gordo Y La Flaca', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Mario Perea', outlet:'Hoy Dia', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'TBD', outlet:'IMAX.com', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Rafael Cores', outlet:'ImpreMedia', territory:'USA', format:'In-person', talent:'All + Casarosa', status:'confirmed' },
+  { journalist:'TBD', outlet:'KTLA-TV (CW)', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Mark S. Allen', outlet:'KXTV-TV (ABC)', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'TBC', outlet:'Letterboxd', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Miranda Montenegro', outlet:'Mitú', territory:'USA', format:'Specialty', talent:'All talent', status:'confirmed' },
+  { journalist:'Joe Deckelmeier', outlet:'MovieWeb', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Photographer TBD', outlet:'New York Times National', territory:'USA', format:'Photoshoot', talent:'Joan Cusack only', status:'confirmed' },
+  { journalist:'Danielle Broadway', outlet:'Reuters', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Brian Truitt', outlet:'USA Today', territory:'USA', format:'Virtual', talent:'Hanks & Allen', status:'confirmed' },
+  { journalist:'Jake Hamilton', outlet:'WFLD-TV (Fox)', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+  { journalist:'Patrick Stoner', outlet:'WHYY-TV (PBS)', territory:'USA', format:'Virtual', talent:'Tom Hanks only', status:'confirmed' },
+  { journalist:'KT (Kurra Turner)', outlet:'Disney Internal', territory:'USA', format:'In-person', talent:'All talent', status:'confirmed' },
+];
 
-// ── FLOWS ─────────────────────────────────────────────────────
-const FLOWS = {
+const DB = {
+  screenings: [],
+  junkets: [],
+  press: [],
+  submissions: [],
 
-  screening: [
-    { key:'title', ask: () => "Which film are we scheduling for?",
-      chips: ["Toy Story 5","Incredibles 4","Inside Out 3","Other"] },
-    { key:'type', ask: () => `Got it — <strong>${ctx.title}</strong>. What type of screening?`,
-      chips: ["Press","Word of Mouth (WOM)","Festival","Special Event","IMAX Premiere"] },
-    { key:'market', ask: () => `A <strong>${ctx.type}</strong> screening. Which market?`,
-      chips: ["Los Angeles","New York","Atlanta","Chicago","Other"] },
-    { key:'theater', ask: () => `${marketLine(ctx.market)} Do you have a preferred theater, or would you like suggestions?`,
-      chips: theaterSuggestions },
-    { key:'datetime', ask: () => `<strong>${ctx.theater}</strong> — great choice. What date and time are you targeting?`,
-      chips: [] },
-    { key:'format', ask: () => `${dateLine(ctx.datetime)} What format?`,
-      chips: ["Standard","IMAX","Dolby Cinema","4DX","Premium Large Format"] },
-    { key:'seats', ask: () => `<strong>${ctx.format}</strong>. How many seats do you need?`,
-      chips: ["100","150","250","400","Full house"] },
-    { key:'security', ask: () => `${seatsLine(ctx.seats)} Will you need on-site security?`,
-      chips: ["Yes — full security","Minimal / check only","No","TBD"] },
-    { key:'confirm', ask: () => null, isConfirm: true }
-  ],
+  init() {
+    const inited = localStorage.getItem('pgs_v3_init');
+    if (!inited) {
+      this.screenings = JSON.parse(JSON.stringify(TS5_SCREENINGS));
+      this.junkets    = JSON.parse(JSON.stringify(TS5_JUNKETS));
+      this.press      = JSON.parse(JSON.stringify(TS5_PRESS));
+      this.submissions = [];
+      this.save();
+      localStorage.setItem('pgs_v3_init','1');
+    } else {
+      this.screenings  = JSON.parse(localStorage.getItem('pgs_screenings')  || '[]');
+      this.junkets     = JSON.parse(localStorage.getItem('pgs_junkets')     || '[]');
+      this.press       = JSON.parse(localStorage.getItem('pgs_press')       || '[]');
+      this.submissions = JSON.parse(localStorage.getItem('pgs_submissions') || '[]');
+    }
+  },
 
-  junket: [
-    { key:'title', ask: () => "Which film are we planning a junket for?",
-      chips: ["Toy Story 5","Incredibles 4","Inside Out 3","Other"] },
-    { key:'dates', ask: () => `<strong>${ctx.title}</strong> — perfect. What are the dates?`,
-      chips: [] },
-    { key:'location', ask: () => `Got the dates. Where will it be held? (City and hotel if you have one in mind)`,
-      chips: ["Fairmont San Francisco","The Beverly Hills Hotel","The Ritz-Carlton LA","Other"] },
-    { key:'talent', ask: () => `<strong>${ctx.location}</strong> — noted. Which talent will be participating?`,
-      chips: [] },
-    { key:'press_status', ask: () => `Great. Do you have a press list ready, or are you starting from scratch?`,
-      chips: ["I have a list to import","Starting fresh","Coming from PR team"] },
-    { key:'confirm', ask: () => null, isConfirm: true }
-  ],
+  save() {
+    localStorage.setItem('pgs_screenings',  JSON.stringify(this.screenings));
+    localStorage.setItem('pgs_junkets',     JSON.stringify(this.junkets));
+    localStorage.setItem('pgs_press',       JSON.stringify(this.press));
+    localStorage.setItem('pgs_submissions', JSON.stringify(this.submissions));
+  },
 
-  press: [
-    { key:'event', ask: () => "Which event are we adding press to?",
-      chips: ["TS5 Junket — Jun 6","Incredibles 4 Long Lead","New event"] },
-    { key:'journalist', ask: () => `Adding press to <strong>${ctx.event}</strong>. What's the journalist's name?`,
-      chips: [] },
-    { key:'outlet', ask: () => `And which outlet does <strong>${ctx.journalist}</strong> represent?`,
-      chips: [] },
-    { key:'talent_req', ask: () => `Got it. Which talent are they requesting an interview with?`,
-      chips: ["Tom Hanks & Tim Allen","Joan Cusack & Tony Hale","Andrew Stanton & Kenna Harris","All talent","Specific — I'll type it"] },
-    { key:'format', ask: () => `Noted. Any special requests? Format, virtual vs. in-person, AV needs?`,
-      chips: ["In-person only","Virtual OK","Specialty concept","No special requests"] },
-    { key:'confirm', ask: () => null, isConfirm: true }
-  ],
+  addScreening(ctx) {
+    const r = { id:'scr'+Date.now(), title:ctx.title, type:ctx.type, market:ctx.market,
+      theater:ctx.theater, datetime:ctx.datetime, format:ctx.format, seats:ctx.seats,
+      security:ctx.security, status:'pending', rsvp:0,
+      submittedAt:new Date().toLocaleDateString(), isPreload:false };
+    this.screenings.push(r);
+    this.logActivity('Screening request submitted: '+ctx.title+' · '+ctx.type+' · '+ctx.theater);
+    this.save(); updateCounts();
+    return r;
+  },
 
-  report: [
-    { key:'event', ask: () => "Which event do you need a report for?",
-      chips: ["TS5 Junket — Jun 6","Incredibles 4 Long Lead","All active events"] },
-    { key:'type', ask: () => `Which report?`,
-      chips: ["Rooming List","Transfer Manifest","Travel Report","Press Attendance","Interview Schedule","1:1 Requests by Talent"] },
-    { key:'confirm', ask: () => null, isConfirm: true }
-  ],
+  addJunket(ctx) {
+    const r = { id:'jnk'+Date.now(), title:ctx.title, dates:ctx.dates, location:ctx.location,
+      talent:ctx.talent, press_status:ctx.press_status, status:'planning',
+      submittedAt:new Date().toLocaleDateString(), isPreload:false };
+    this.junkets.push(r);
+    this.logActivity('Junket created: '+ctx.title+' · '+ctx.dates);
+    this.save(); updateCounts();
+    return r;
+  },
 
-  intl: [
-    { key:'title', ask: () => "Which title are we coordinating international press for?",
-      chips: ["Toy Story 5","Incredibles 4","Other"] },
-    { key:'territories', ask: () => `<strong>${ctx.title}</strong> — which territories do you want to review or update?`,
-      chips: ["All territories","UK","France","Germany","Australia","Japan","Other"] },
-    { key:'action', ask: () => `What do you need to do for <strong>${ctx.territories}</strong>?`,
-      chips: ["Check nomination status","Add/update nominees","Pull logistics report","Approve pending nominations"] },
-    { key:'confirm', ask: () => null, isConfirm: true }
-  ]
+  addPressGuest(ctx) {
+    const r = { journalist:ctx.journalist, outlet:ctx.outlet, territory:'USA',
+      format:ctx.format, talent:ctx.talent_req, status:'pending',
+      submittedAt:new Date().toLocaleDateString(), isPreload:false };
+    this.press.push(r);
+    this.logActivity('Press guest added: '+ctx.journalist+' · '+ctx.outlet);
+    this.save(); updateCounts();
+    return r;
+  },
+
+  logActivity(msg) {
+    this.submissions.unshift({ msg, at: new Date().toLocaleTimeString() });
+    if (this.submissions.length > 50) this.submissions.pop();
+  }
 };
 
-// ── HELPERS ──────────────────────────────────────────────────
-function marketLine(m) {
-  const map = {'Los Angeles':'Perfect — LA has great options.','New York':'New York — great market.','Atlanta':'Atlanta it is.','Chicago':'Chicago — noted.'};
-  return map[m] || `${m} — noted.`;
-}
-function theaterSuggestions() {
-  const t = ctx.market;
-  if (!t) return ['Select theater','Other'];
-  const map = {'Los Angeles':['AMC Century City 15','ArcLight Hollywood','El Capitan Theatre','DGA Theater'],
-    'New York':['AMC Lincoln Square 13','SVA Theatre','IFC Center','Metrograph'],
-    'Atlanta':['AMC Phipps Plaza 14','Regal Buckhead','Landmark Midtown Art Cinema'],
-    'Chicago':['AMC River East 21','Music Box Theatre','Landmark Century Centre']};
-  return [...(map[t]||['Select theater']),'Other'];
-}
-function dateLine(d) {
-  return d ? `<strong>${d}</strong> it is.` : 'Got it.';
-}
-function seatsLine(s) {
-  return s ? `<strong>${s} seats</strong> — noted.` : 'Noted.';
+// ══════════════════════════════════════════════════════════
+// COUNTS
+// ══════════════════════════════════════════════════════════
+function updateCounts() {
+  const total = DB.screenings.length + DB.junkets.length + DB.press.length;
+  document.getElementById('records-count').textContent = total;
+  document.getElementById('sb-scr-count').textContent  = DB.screenings.length + ' active';
+  document.getElementById('sb-press-count').textContent = DB.press.length + ' credentialed';
 }
 
-// ── CONFIRMATION CARDS ────────────────────────────────────────
-function buildConfirmCard() {
-  const flow = state.split('.')[0];
-  if (flow === 'screening') return screeningCard();
-  if (flow === 'junket')    return junketCard();
-  if (flow === 'press')     return pressCard();
-  if (flow === 'report')    return reportCard();
-  if (flow === 'intl')      return intlCard();
-  return null;
+// ══════════════════════════════════════════════════════════
+// RECORDS PANEL
+// ══════════════════════════════════════════════════════════
+let rpCurrentTab = 'overview';
+
+function openRecords(tab) {
+  document.getElementById('rp-overlay').classList.add('open');
+  document.getElementById('records-panel').classList.add('open');
+  rpTab(tab, document.querySelectorAll('.rp-tab')[['overview','screening','junket','press'].indexOf(tab)] || document.querySelector('.rp-tab'));
+}
+function closeRecords() {
+  document.getElementById('rp-overlay').classList.remove('open');
+  document.getElementById('records-panel').classList.remove('open');
+}
+function rpTab(tab, el) {
+  rpCurrentTab = tab;
+  document.querySelectorAll('.rp-tab').forEach(t=>t.classList.remove('on'));
+  if(el)el.classList.add('on');
+  renderRp(tab);
 }
 
-function cardRow(lbl, val) {
-  if (!val || val === '—') return '';
-  return `<div class="card-row"><div class="card-lbl">${lbl}</div><div class="card-val">${val}</div></div>`;
+function renderRp(tab) {
+  const body = document.getElementById('rp-body');
+  if (tab === 'overview') body.innerHTML = renderOverview();
+  else if (tab === 'screening') body.innerHTML = renderScreenings();
+  else if (tab === 'junket') body.innerHTML = renderJunkets();
+  else if (tab === 'press') body.innerHTML = renderPressPanel();
 }
 
-function screeningCard() {
-  const el = document.createElement('div');
-  el.className = 'card';
-  el.innerHTML = `
-    <div class="card-header">
-      <span class="card-header-icon">🎬</span>
-      <div><div class="card-header-title">Screening Request</div><div class="card-header-sub">${ctx.title||''}</div></div>
-      <span class="card-draft">DRAFT</span>
+function renderOverview() {
+  const newScr  = DB.screenings.filter(s=>!s.isPreload).length;
+  const newJnk  = DB.junkets.filter(j=>!j.isPreload).length;
+  const newPres = DB.press.filter(p=>!p.isPreload).length;
+  const acts = DB.submissions.slice(0,6).map(s=>
+    `<div style="display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px">
+      <div style="width:6px;height:6px;border-radius:50%;background:var(--gold);margin-top:4px;flex-shrink:0"></div>
+      <div><div style="color:var(--dark)">${s.msg}</div><div style="color:var(--muted);font-size:10px">${s.at}</div></div>
+    </div>`).join('') || '<div class="rp-empty">No new submissions yet in this session</div>';
+  return `
+    <div class="stat-row">
+      <div class="stat-mini"><div class="stat-mini-val">${DB.screenings.length}</div><div class="stat-mini-lbl">Screenings</div></div>
+      <div class="stat-mini"><div class="stat-mini-val">${DB.junkets.length}</div><div class="stat-mini-lbl">Junkets</div></div>
+      <div class="stat-mini"><div class="stat-mini-val">${DB.press.length}</div><div class="stat-mini-lbl">Press credentialed</div></div>
     </div>
-    <div class="card-body">
-      ${cardRow('Type', ctx.type)}
-      ${cardRow('Market', ctx.market)}
-      ${cardRow('Theater', ctx.theater)}
-      ${cardRow('Date / time', ctx.datetime)}
-      ${cardRow('Format', ctx.format)}
-      ${cardRow('Seats', ctx.seats)}
-      ${cardRow('Security', ctx.security)}
-    </div>
-    <div class="card-actions">
-      <button class="card-action-primary" onclick="submitCard(this,'Screening request submitted for approval.')">Submit for approval</button>
-      <button class="card-action-sec" onclick="editCard()">Edit</button>
-      <button class="card-action-sec" onclick="startOver()">Start over</button>
+    ${newScr+newJnk+newPres > 0 ? `<div style="background:var(--gold-l);border:1px solid var(--gold);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--amber);margin-bottom:14px">
+      <strong>${newScr+newJnk+newPres} new record${newScr+newJnk+newPres!==1?'s':''}</strong> added in this session via chat
+    </div>` : ''}
+    <div class="rp-section-title">Recent activity</div>
+    ${acts}`;
+}
+
+function renderScreenings() {
+  const items = DB.screenings.map(s => {
+    const statCls = s.status==='confirmed'?'bg':'bs';
+    const rsvpStr = s.rsvp > 0 ? `${s.rsvp}/${s.seats} RSVPs` : 'No RSVPs yet';
+    return `<div class="rec-item" style="${s.isPreload?'':'border-left:3px solid var(--gold)'}">
+      <div class="rec-icon">🎬</div>
+      <div style="flex:1">
+        <div class="rec-title">${s.title} — ${s.type} ${!s.isPreload?'<span class="new-badge">NEW</span>':''}</div>
+        <div class="rec-meta">${s.theater} · ${s.market}</div>
+        <div class="rec-meta">${s.datetime} · ${s.format}</div>
+      </div>
+      <div class="rec-right">
+        <div><span class="b ${statCls}" style="font-size:10px">${s.status}</span></div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-top:4px">${rsvpStr}</div>
+      </div>
     </div>`;
-  return el;
+  }).join('');
+  return `<div class="rp-section-title">${DB.screenings.length} screening${DB.screenings.length!==1?'s':''}</div>${items}
+    <div style="margin-top:10px"><button class="card-btn-p" onclick="closeRecords();chipSend('Schedule a screening')">+ Schedule new screening</button></div>`;
 }
 
-function junketCard() {
-  const el = document.createElement('div');
-  el.className = 'card';
-  el.innerHTML = `
-    <div class="card-header">
-      <span class="card-header-icon">🎤</span>
-      <div><div class="card-header-title">Junket Setup</div><div class="card-header-sub">${ctx.title||''}</div></div>
-      <span class="card-draft">DRAFT</span>
+function renderJunkets() {
+  const items = DB.junkets.map(j => `<div class="rec-item" style="${j.isPreload?'':'border-left:3px solid var(--gold)'}">
+    <div class="rec-icon">🎤</div>
+    <div style="flex:1">
+      <div class="rec-title">${j.title} Junket ${!j.isPreload?'<span class="new-badge">NEW</span>':''}</div>
+      <div class="rec-meta">${j.dates}</div>
+      <div class="rec-meta">${j.location}</div>
+      <div class="rec-meta" style="margin-top:3px;font-size:10px;color:var(--muted)">${j.press_status}</div>
     </div>
-    <div class="card-body">
-      ${cardRow('Film', ctx.title)}
-      ${cardRow('Dates', ctx.dates)}
-      ${cardRow('Location', ctx.location)}
-      ${cardRow('Talent', ctx.talent)}
-      ${cardRow('Press list', ctx.press_status)}
-    </div>
-    <div class="card-actions">
-      <button class="card-action-primary" onclick="submitCard(this,'Junket created. Opening in Junket Planning module.')">Create junket</button>
-      <button class="card-action-sec" onclick="editCard()">Edit</button>
-      <button class="card-action-sec" onclick="startOver()">Start over</button>
-    </div>`;
-  return el;
+    <div class="rec-right"><span class="b ${j.status==='active'?'bg':'bv'}">${j.status}</span></div>
+  </div>`).join('');
+  return `<div class="rp-section-title">${DB.junkets.length} junket${DB.junkets.length!==1?'s':''}</div>${items}
+    <div style="margin-top:10px"><button class="card-btn-p" onclick="closeRecords();chipSend('Plan a junket')">+ Plan new junket</button></div>`;
 }
 
-function pressCard() {
-  const el = document.createElement('div');
-  el.className = 'card';
-  el.innerHTML = `
-    <div class="card-header">
-      <span class="card-header-icon">📋</span>
-      <div><div class="card-header-title">Press Guest Added</div><div class="card-header-sub">${ctx.event||''}</div></div>
-      <span class="card-draft">DRAFT</span>
-    </div>
-    <div class="card-body">
-      ${cardRow('Journalist', ctx.journalist)}
-      ${cardRow('Outlet', ctx.outlet)}
-      ${cardRow('Talent req.', ctx.talent_req)}
-      ${cardRow('Format', ctx.format)}
-    </div>
-    <div class="card-actions">
-      <button class="card-action-primary" onclick="submitCard(this,'Guest record created.')">Save guest</button>
-      <button class="card-action-sec" onclick="addAnother()">Add another</button>
-      <button class="card-action-sec" onclick="startOver()">Done</button>
-    </div>`;
-  return el;
+function renderPressPanel() {
+  const rows = DB.press.map((p,i) => `<tr>
+    <td style="font-weight:500">${p.journalist}</td>
+    <td>${p.outlet}</td>
+    <td>${p.format==='Virtual'?'<span class="b bv">Virtual</span>':p.format==='Specialty'?'<span class="b bs">Spec</span>':p.format==='Photoshoot'?'<span style="background:#F3E8FF;color:#7C3AED;display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500">Photo</span>':'<span class="b" style="background:#F1EFE8;color:#5F5E5A">In-person</span>'}</td>
+    <td><span class="b ${p.isPreload===false?'bs':'bg'}" style="font-size:9px">${p.isPreload===false?'New':'✓'}</span></td>
+  </tr>`).join('');
+  return `<input class="rp-search" placeholder="Search journalists…" oninput="filterPressPanel(this.value)" id="press-search"/>
+    <div class="rp-section-title">${DB.press.length} journalists credentialed for TS5</div>
+    <div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border)">
+    <table class="press-tbl" id="press-panel-tbl">
+      <thead><tr><th>Journalist</th><th>Outlet</th><th>Format</th><th>Status</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    <div style="margin-top:10px"><button class="card-btn-p" onclick="closeRecords();chipSend('Add press guests')">+ Add press guest</button></div>`;
 }
 
-function reportCard() {
-  const el = document.createElement('div');
-  el.className = 'card';
-  el.innerHTML = `
-    <div class="card-header">
-      <span class="card-header-icon">📄</span>
-      <div><div class="card-header-title">${ctx.type||'Report'}</div><div class="card-header-sub">${ctx.event||''}</div></div>
-    </div>
-    <div class="card-body" style="padding:14px 16px">
-      <div style="font-size:12px;color:var(--muted)">Ready to generate. This report will be formatted and ready to send — no reformatting required.</div>
-    </div>
-    <div class="card-actions">
-      <button class="card-action-primary" onclick="submitCard(this,'Report generated and downloading.')">Download CSV</button>
-      <button class="card-action-sec" onclick="startOver()">Generate another</button>
-    </div>`;
-  return el;
+function filterPressPanel(q) {
+  const rows = document.querySelectorAll('#press-panel-tbl tbody tr');
+  rows.forEach(r => { r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none'; });
 }
 
-function intlCard() {
-  const el = document.createElement('div');
-  el.className = 'card';
-  el.innerHTML = `
-    <div class="card-header">
-      <span class="card-header-icon">🌍</span>
-      <div><div class="card-header-title">International — ${ctx.title||''}</div><div class="card-header-sub">${ctx.territories||''}</div></div>
-    </div>
-    <div class="card-body">
-      ${cardRow('Title', ctx.title)}
-      ${cardRow('Territory', ctx.territories)}
-      ${cardRow('Action', ctx.action)}
-    </div>
-    <div class="card-actions">
-      <button class="card-action-primary" onclick="submitCard(this,'Opening in International module.')">Open in INTL</button>
-      <button class="card-action-sec" onclick="startOver()">Start over</button>
-    </div>`;
-  return el;
-}
-
-// ── INTENT DETECTION ─────────────────────────────────────────
-function detectIntent(input) {
-  const q = input.toLowerCase();
-  if (/screen|wom|word of mouth|theater|theatre|imax|dolby/.test(q)) return 'screening';
-  if (/junket|press day|press event|press conference/.test(q)) return 'junket';
-  if (/press|journalist|credential|outlet|media guest|add press/.test(q)) return 'press';
-  if (/report|rooming|transfer manifest|travel report|attendance|download|generate/.test(q)) return 'report';
-  if (/international|intl|territory|global|uk|france|germany|australia|japan/.test(q)) return 'intl';
-  return null;
-}
-
-// ── CONVERSATION ENGINE ───────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// CONVERSATION STATE MACHINE
+// ══════════════════════════════════════════════════════════
+let state = 'idle';
+let ctx = {};
 let flowIndex = 0;
 
+const FLOWS = {
+  screening: [
+    { key:'title',    ask:()=>"Which film are we scheduling for?",    chips:["Toy Story 5","Incredibles 4","Inside Out 3","Other"] },
+    { key:'type',     ask:()=>`Got it — <strong>${ctx.title}</strong>. What type of screening?`, chips:["Press","Word of Mouth (WOM)","Festival","Special Event","IMAX Premiere"] },
+    { key:'market',   ask:()=>"Which market?", chips:["Los Angeles","New York","Atlanta","Chicago","Other"] },
+    { key:'theater',  ask:()=>`${ctx.market} — great. Preferred theater, or should I suggest options?`, chips:()=>theaterOpts() },
+    { key:'datetime', ask:()=>`<strong>${ctx.theater}</strong>. What date and time are you targeting?`, chips:[] },
+    { key:'format',   ask:()=>"What format?", chips:["Standard","IMAX","Dolby Cinema","4DX","Premium Large Format"] },
+    { key:'seats',    ask:()=>`<strong>${ctx.format}</strong>. How many seats?`, chips:["100","150","250","400","Full house"] },
+    { key:'security', ask:()=>"Will you need on-site security?", chips:["Yes — full security","Minimal / check only","No","TBD"] },
+    { key:'confirm',  isConfirm:true }
+  ],
+  junket:[
+    { key:'title',        ask:()=>"Which film?", chips:["Toy Story 5","Incredibles 4","Inside Out 3","Other"] },
+    { key:'dates',        ask:()=>`<strong>${ctx.title}</strong> — what are the dates?`, chips:[] },
+    { key:'location',     ask:()=>"Where will it be held?", chips:["Fairmont San Francisco","The Beverly Hills Hotel","The Ritz-Carlton LA","Other"] },
+    { key:'talent',       ask:()=>"Which talent will be participating?", chips:[] },
+    { key:'press_status', ask:()=>"Is your press list ready?", chips:["I have a list to import","Starting fresh","Coming from PR team"] },
+    { key:'confirm', isConfirm:true }
+  ],
+  press:[
+    { key:'event',      ask:()=>"Which event are we adding press to?", chips:["TS5 Junket — Jun 6","Incredibles 4 Long Lead","Other event"] },
+    { key:'journalist', ask:()=>`Adding press to <strong>${ctx.event}</strong>. Journalist's name?`, chips:[] },
+    { key:'outlet',     ask:()=>`Which outlet does <strong>${ctx.journalist}</strong> represent?`, chips:[] },
+    { key:'talent_req', ask:()=>"Which talent are they requesting?", chips:["Tom Hanks & Tim Allen","Joan Cusack & Tony Hale","Andrew Stanton & Kenna Harris","All talent"] },
+    { key:'format',     ask:()=>"Any special requests?", chips:["In-person only","Virtual OK","Specialty concept","No special requests"] },
+    { key:'confirm', isConfirm:true }
+  ],
+  report:[
+    { key:'event', ask:()=>"Which event?", chips:["TS5 Junket — Jun 6","Incredibles 4 Long Lead","All active events"] },
+    { key:'type',  ask:()=>"Which report?", chips:["Rooming List","Transfer Manifest","Travel Report","Press Attendance","Interview Schedule","1:1 Requests by Talent"] },
+    { key:'confirm', isConfirm:true }
+  ],
+};
+
+function theaterOpts() {
+  const m={'Los Angeles':["AMC Century City 15","ArcLight Hollywood","El Capitan Theatre","DGA Theater","Other"],'New York':["AMC Lincoln Square 13","SVA Theatre","IFC Center","Other"],'Atlanta':["AMC Phipps Plaza 14","Regal Buckhead","Other"],'Chicago':["AMC River East 21","Music Box Theatre","Other"]};
+  return m[ctx.market] || ["Other"];
+}
+
+function detectIntent(q) {
+  const lq = q.toLowerCase();
+  if(/show.*(screen|wom)|list screen|what screen|how many screen|my screen/.test(lq)) return '_show_screenings';
+  if(/show.*(junket|press day)|list junket|what junket|my junket/.test(lq)) return '_show_junkets';
+  if(/show.*(press|journalist)|list press|who.*press|press list|how many press|my press/.test(lq)) return '_show_press';
+  if(/show record|open record|view record|what.*system|show.*data|overview/.test(lq)) return '_show_overview';
+  if(/screen|wom|word of mouth|theater|theatre/.test(lq)) return 'screening';
+  if(/junket|press day|press event/.test(lq)) return 'junket';
+  if(/press|journalist|credential/.test(lq)) return 'press';
+  if(/report|rooming|download|generate/.test(lq)) return 'report';
+  if(/international|intl|territory|global/.test(lq)) return 'intl_placeholder';
+  return null;
+}
+
+function respond(input) {
+  const q = input.toLowerCase().trim();
+  if(/^(start over|restart|reset|new|home)$/.test(q)) { startOver(); return; }
+  if(/^help$/.test(q) || q === '?') { showWelcome(); return; }
+
+  if (state === 'idle' || state === 'done') {
+    const intent = detectIntent(input);
+    if (!intent) {
+      botMessage("I can help with screenings, junkets, press guests, reports, and more. What would you like to do?",
+        ["Schedule a screening","Plan a junket","Add press guests","Show my screenings","Show press list"]);
+      return;
+    }
+    if (intent.startsWith('_show_')) { handleDataQuery(intent); return; }
+    if (intent === 'intl_placeholder') { botMessage("International coordination is available — which title and territory would you like to work on?",["Toy Story 5","Incredibles 4"]); return; }
+    startFlow(intent);
+    return;
+  }
+  advanceFlow(input);
+}
+
+// ── DATA QUERIES ──────────────────────────────────────────
+function handleDataQuery(intent) {
+  if (intent === '_show_screenings') {
+    const scrs = DB.screenings;
+    const rows = scrs.map(s=>`<tr>
+      <td style="font-weight:500">${s.title}</td>
+      <td>${s.type}</td>
+      <td>${s.theater}</td>
+      <td>${s.datetime}</td>
+      <td><span class="b ${s.status==='confirmed'?'bg':'bs'}">${s.status}</span></td>
+    </tr>`).join('');
+    const tbl = `<div class="mini-tbl-wrap"><table class="mini-tbl">
+      <thead><tr><th>Film</th><th>Type</th><th>Theater</th><th>Date/Time</th><th>Status</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+    botMessage(`You have <strong>${scrs.length} screening${scrs.length!==1?'s':''}</strong> in the system:`);
+    addCard(tbl);
+    addChips(["Schedule another","View in Records"]);
+  } else if (intent === '_show_junkets') {
+    const j = DB.junkets[0];
+    botMessage(`<strong>${DB.junkets.length} active junket</strong> in PGS:`);
+    const tbl = `<div class="mini-tbl-wrap"><table class="mini-tbl">
+      <thead><tr><th>Film</th><th>Dates</th><th>Location</th><th>Status</th></tr></thead>
+      <tbody>${DB.junkets.map(j=>`<tr><td style="font-weight:500">${j.title}</td><td>${j.dates}</td><td>${j.location.split('·')[0].trim()}</td><td><span class="b bg">${j.status}</span></td></tr>`).join('')}</tbody>
+    </table></div>`;
+    addCard(tbl);
+    addChips(["Plan another junket","View in Records"]);
+  } else if (intent === '_show_press') {
+    const p = DB.press;
+    const virtual  = p.filter(g=>g.format==='Virtual').length;
+    const specialty= p.filter(g=>g.format==='Specialty').length;
+    const newOnes  = p.filter(g=>g.isPreload===false).length;
+    botMessage(`<strong>${p.length} press guests</strong> credentialed for TS5 — ${virtual} virtual, ${specialty} specialty format${newOnes>0?`, ${newOnes} added this session`:''}.`);
+    const rows = p.slice(0,8).map(g=>`<tr><td style="font-weight:500">${g.journalist}</td><td>${g.outlet}</td><td>${g.format}</td></tr>`).join('');
+    const tbl = `<div class="mini-tbl-wrap"><table class="mini-tbl">
+      <thead><tr><th>Journalist</th><th>Outlet</th><th>Format</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    <div style="font-size:11px;color:var(--muted);padding:6px 8px">Showing 8 of ${p.length} — open Records panel to see all</div>`;
+    addCard(tbl);
+    addChips(["Add press guest","View full list in Records"]);
+  } else if (intent === '_show_overview') {
+    openRecords('overview');
+    botMessage("Here's your Records panel — all TS5 data in one view.", ["Schedule a screening","Add press guest"]);
+  }
+}
+
+function addCard(html) {
+  removeChips();
+  const msgs = document.getElementById('messages');
+  const row = document.createElement('div');
+  row.className = 'msg-row';
+  const spacer = document.createElement('div'); spacer.style.width='40px';
+  const wrap = document.createElement('div');
+  wrap.innerHTML = html;
+  row.appendChild(spacer); row.appendChild(wrap);
+  msgs.appendChild(row);
+  scrollBot();
+}
+function addChips(chips) {
+  const cr = document.createElement('div'); cr.className='chip-row';
+  chips.forEach(c => {
+    const b = document.createElement('button'); b.className='chip'; b.textContent=c;
+    b.onclick = () => { if(c==='View in Records'||c==='View full list in Records') openRecords(c.includes('full')?'press':'overview'); else chipSend(c); };
+    cr.appendChild(b);
+  });
+  document.getElementById('messages').appendChild(cr);
+  scrollBot();
+}
+
+// ── FLOW ENGINE ───────────────────────────────────────────
 function getStep() {
   const flow = state.split('.')[0];
-  const steps = FLOWS[flow];
-  if (!steps) return null;
-  return steps[flowIndex] || null;
+  return (FLOWS[flow]||[])[flowIndex] || null;
 }
 
 function startFlow(intent) {
-  state = intent + '.0';
-  flowIndex = 0;
-  ctx = {};
+  state = intent+'.0'; flowIndex = 0; ctx = {};
   const step = getStep();
-  if (step) {
-    const chips = typeof step.chips === 'function' ? step.chips() : step.chips;
-    botMessage(step.ask(), chips);
-  }
+  if(step){ const chips = typeof step.chips==='function'?step.chips():step.chips; botMessage(step.ask(), chips); }
 }
 
 function advanceFlow(input) {
   const flow = state.split('.')[0];
-  const steps = FLOWS[flow];
-  const step = steps[flowIndex];
-  if (!step) return;
-
-  // Save to context
+  const steps = FLOWS[flow]; if(!steps) return;
+  const step = steps[flowIndex]; if(!step) return;
   ctx[step.key] = input;
   flowIndex++;
-
   const next = steps[flowIndex];
-  if (!next) { showConfirmation(); return; }
-
-  if (next.isConfirm) { showConfirmation(); return; }
-
+  if(!next || next.isConfirm) { showConfirmation(); return; }
   const ask = next.ask();
-  const chips = typeof next.chips === 'function' ? next.chips() : next.chips;
-  setTimeout(() => botMessage(ask, chips.length ? chips : []), 600);
+  const chips = typeof next.chips==='function'?next.chips():next.chips;
+  setTimeout(() => botMessage(ask, chips||[]), 550);
 }
 
 function showConfirmation() {
-  const confirmTexts = {
-    screening: "Here's the screening request I've built. Everything look right?",
-    junket: "Here's the junket setup. Want to proceed?",
-    press: "Here's the guest record. Ready to save?",
-    report: "Ready to generate this report:",
-    intl: "Here's what I've got. Want to open this in the International module?"
-  };
   const flow = state.split('.')[0];
+  const msgs = { screening:"Here's the screening request — everything look right?", junket:"Here's the junket setup — ready to create?", press:"Here's the guest record — ready to save?", report:"Ready to generate:" };
   setTimeout(() => {
-    botMessage(confirmTexts[flow] || "Here's what I've built:");
-    const card = buildConfirmCard();
-    if (card) {
-      const msgs = document.getElementById('messages');
-      const row = document.createElement('div');
-      row.className = 'msg-row';
-      const spacer = document.createElement('div');
-      spacer.style.width = '42px';
-      row.appendChild(spacer);
-      row.appendChild(card);
-      msgs.appendChild(row);
-      scrollBottom();
+    botMessage(msgs[flow]||"Here's what I've built:");
+    const card = makeCard(flow);
+    if(card) {
+      const msgs_el = document.getElementById('messages');
+      const row = document.createElement('div'); row.className='msg-row';
+      const sp = document.createElement('div'); sp.style.width='40px';
+      row.appendChild(sp); row.appendChild(card);
+      msgs_el.appendChild(row); scrollBot();
     }
     state = 'done';
   }, 800);
 }
 
-function respond(input) {
-  const q = input.toLowerCase().trim();
+function cardRow(l,v){return v?`<div class="card-row"><div class="card-lbl">${l}</div><div class="card-val">${v}</div></div>`:'';}
 
-  // Universal commands
-  if (/^(start over|restart|reset|new|done|home|exit)$/.test(q)) { startOver(); return; }
-  if (/^(help|\?)$/.test(q)) { showWelcome(); return; }
-
-  if (state === 'idle' || state === 'done') {
-    const intent = detectIntent(input);
-    if (intent) {
-      startFlow(intent);
-    } else {
-      botMessage(
-        "I can help you with any of these — just say the word:",
-        ["Schedule a screening","Plan a junket","Add press guests","Generate a report","International coordination"]
-      );
-    }
-    return;
+function makeCard(flow) {
+  const el = document.createElement('div'); el.className='card';
+  if(flow==='screening'){
+    el.innerHTML=`<div class="card-hdr"><span class="card-hdr-ico">🎬</span><div><div class="card-hdr-title">Screening Request</div><div class="card-hdr-sub">${ctx.title}</div></div><span class="card-draft">DRAFT</span></div>
+      <div class="card-body">${cardRow('Type',ctx.type)}${cardRow('Market',ctx.market)}${cardRow('Theater',ctx.theater)}${cardRow('Date/time',ctx.datetime)}${cardRow('Format',ctx.format)}${cardRow('Seats',ctx.seats)}${cardRow('Security',ctx.security)}</div>
+      <div class="card-actions"><button class="card-btn-p" onclick="submitCard(this,'screening','Screening request submitted and saved to PGS Records.')">Submit for approval</button><button class="card-btn-s" onclick="startOver()">Start over</button></div>`;
+  } else if(flow==='junket'){
+    el.innerHTML=`<div class="card-hdr"><span class="card-hdr-ico">🎤</span><div><div class="card-hdr-title">Junket Setup</div><div class="card-hdr-sub">${ctx.title}</div></div><span class="card-draft">DRAFT</span></div>
+      <div class="card-body">${cardRow('Film',ctx.title)}${cardRow('Dates',ctx.dates)}${cardRow('Location',ctx.location)}${cardRow('Talent',ctx.talent)}${cardRow('Press list',ctx.press_status)}</div>
+      <div class="card-actions"><button class="card-btn-p" onclick="submitCard(this,'junket','Junket created and saved to PGS Records.')">Create junket</button><button class="card-btn-s" onclick="startOver()">Start over</button></div>`;
+  } else if(flow==='press'){
+    el.innerHTML=`<div class="card-hdr"><span class="card-hdr-ico">📋</span><div><div class="card-hdr-title">Press Guest</div><div class="card-hdr-sub">${ctx.event}</div></div><span class="card-draft">DRAFT</span></div>
+      <div class="card-body">${cardRow('Journalist',ctx.journalist)}${cardRow('Outlet',ctx.outlet)}${cardRow('Talent req.',ctx.talent_req)}${cardRow('Format',ctx.format)}</div>
+      <div class="card-actions"><button class="card-btn-p" onclick="submitCard(this,'press','Guest record saved to PGS Press List.')">Save guest</button><button class="card-btn-s" onclick="addAnother()">Add another</button><button class="card-btn-s" onclick="startOver()">Done</button></div>`;
+  } else if(flow==='report'){
+    el.innerHTML=`<div class="card-hdr"><span class="card-hdr-ico">📄</span><div><div class="card-hdr-title">${ctx.type||'Report'}</div><div class="card-hdr-sub">${ctx.event}</div></div></div>
+      <div style="padding:13px 14px;font-size:11px;color:var(--muted)">Ready to generate — formatted and ready to send, no reformatting required.</div>
+      <div class="card-actions"><button class="card-btn-p" onclick="submitCard(this,'report','Report generated.')">Download CSV</button><button class="card-btn-s" onclick="startOver()">Generate another</button></div>`;
   }
-
-  if (state === 'done') return;
-  advanceFlow(input);
+  return el;
 }
 
-// ── CARD ACTIONS ─────────────────────────────────────────────
-function submitCard(btn, successMsg) {
-  btn.textContent = '✓ Submitted';
+function submitCard(btn, flow, msg) {
+  // Save to DB
+  if(flow==='screening') DB.addScreening(ctx);
+  if(flow==='junket') DB.addJunket(ctx);
+  if(flow==='press') DB.addPressGuest(ctx);
+  btn.textContent = '✓ Saved to PGS';
   btn.style.background = 'var(--green)';
   btn.disabled = true;
   setTimeout(() => {
-    botMessage(successMsg + " Is there anything else I can help with?",
-      ["Schedule another","Back to home","Generate a report"]);
-    state = 'idle';
-  }, 600);
-}
-function editCard() {
-  botMessage("Sure — which detail would you like to change?", []);
-}
-function addAnother() {
-  state = 'press.0';
-  flowIndex = 0;
-  ctx = {event: ctx.event};
-  const step = FLOWS.press[0];
-  botMessage("Adding another guest to <strong>" + ctx.event + "</strong>. What's the journalist's name?", []);
-  flowIndex = 1;
-}
-function startOver() {
-  state = 'idle';
-  flowIndex = 0;
-  ctx = {};
-  showWelcome();
-}
-function newConv() {
-  document.getElementById('messages').innerHTML = '';
-  startOver();
+    botMessage(msg + ' <button onclick="openRecords(\''+flow+'\')" style="background:none;border:none;color:var(--blue);cursor:pointer;font-size:12px;text-decoration:underline">View in Records →</button>',
+      ["Schedule another","Show my screenings","Start over"]);
+    state='idle';
+  }, 500);
 }
 
-// ── RENDERING ─────────────────────────────────────────────────
-let typingEl = null;
+function addAnother() {
+  state='press.0'; flowIndex=0; ctx={event:ctx.event};
+  botMessage(`Adding another guest to <strong>${ctx.event}</strong>. Name?`, []);
+  flowIndex=1;
+}
+function startOver() { state='idle'; flowIndex=0; ctx={}; showWelcome(); }
+function newConv() { document.getElementById('messages').innerHTML=''; startOver(); }
+
+// ── RENDER ────────────────────────────────────────────────
+let typingId = null;
 
 function showTyping() {
   removeChips();
-  const msgs = document.getElementById('messages');
-  const row = document.createElement('div');
-  row.className = 'typing-row';
-  row.id = 'typing-indicator';
-  row.innerHTML = `<div class="avatar bot">PGS</div><div class="typing-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
-  msgs.appendChild(row);
-  scrollBottom();
+  const msgs=document.getElementById('messages');
+  const row=document.createElement('div'); row.className='typing-row'; row.id='typing';
+  row.innerHTML=`<div class="av bot">PGS</div><div class="typing-bub"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  msgs.appendChild(row); scrollBot();
 }
-function hideTyping() {
-  const el = document.getElementById('typing-indicator');
-  if (el) el.remove();
-}
-function removeChips() {
-  document.querySelectorAll('.chip-row').forEach(e => e.remove());
-}
+function hideTyping() { const el=document.getElementById('typing'); if(el)el.remove(); }
+function removeChips() { document.querySelectorAll('.chip-row').forEach(e=>e.remove()); }
 
 function botMessage(html, chips) {
-  if (html === null) return;
+  if(html===null) return;
   hideTyping();
-  const msgs = document.getElementById('messages');
-  const row = document.createElement('div');
-  row.className = 'msg-row';
-  row.innerHTML = `<div class="avatar bot">PGS</div><div class="bubble bot">${html}</div>`;
+  const msgs=document.getElementById('messages');
+  const row=document.createElement('div'); row.className='msg-row';
+  row.innerHTML=`<div class="av bot">PGS</div><div class="bubble bot">${html}</div>`;
   msgs.appendChild(row);
-  if (chips && chips.length) {
-    const chipRow = document.createElement('div');
-    chipRow.className = 'chip-row';
-    chips.forEach(c => {
-      const btn = document.createElement('button');
-      btn.className = 'chip';
-      btn.textContent = c;
-      btn.onclick = () => { sendUserMessage(c); };
-      chipRow.appendChild(btn);
-    });
-    msgs.appendChild(chipRow);
+  if(chips&&chips.length) {
+    const cr=document.createElement('div'); cr.className='chip-row';
+    chips.forEach(c=>{ const b=document.createElement('button'); b.className='chip'; b.textContent=c; b.onclick=()=>chipSend(c); cr.appendChild(b); });
+    msgs.appendChild(cr);
   }
-  scrollBottom();
+  scrollBot();
 }
 
 function userMessage(text) {
   removeChips();
-  const msgs = document.getElementById('messages');
-  const row = document.createElement('div');
-  row.className = 'msg-row user';
-  row.innerHTML = `<div class="avatar user">MI</div><div class="bubble user">${text}</div>`;
-  msgs.appendChild(row);
-  scrollBottom();
+  const msgs=document.getElementById('messages');
+  const row=document.createElement('div'); row.className='msg-row user';
+  row.innerHTML=`<div class="av user">MI</div><div class="bubble user">${text}</div>`;
+  msgs.appendChild(row); scrollBot();
 }
 
-function sendUserMessage(text) {
-  if (!text.trim()) return;
+function chipSend(text) {
   userMessage(text);
-  document.getElementById('chat-input').value = '';
-  document.getElementById('chat-input').style.height = '';
-  setInputEnabled(false);
-  showTyping();
-  const delay = text.length > 60 ? 900 : 550;
-  setTimeout(() => {
-    hideTyping();
-    setInputEnabled(true);
-    respond(text);
-    document.getElementById('chat-input').focus();
-  }, delay);
+  setEnabled(false); showTyping();
+  setTimeout(()=>{ hideTyping(); setEnabled(true); respond(text); document.getElementById('chat-input').focus(); }, 480);
 }
 
-function sendMessage() {
-  const inp = document.getElementById('chat-input');
-  const text = inp.value.trim();
-  if (!text) return;
-  sendUserMessage(text);
+function sendMsg() {
+  const inp=document.getElementById('chat-input');
+  const text=inp.value.trim(); if(!text) return;
+  userMessage(text); inp.value=''; inp.style.height='';
+  setEnabled(false); showTyping();
+  setTimeout(()=>{ hideTyping(); setEnabled(true); respond(text); inp.focus(); }, 560);
 }
 
-function setInputEnabled(on) {
-  document.getElementById('chat-input').disabled = !on;
-  document.getElementById('send-btn').disabled = !on;
+function setEnabled(on) {
+  document.getElementById('chat-input').disabled=!on;
+  document.getElementById('send-btn').disabled=!on;
 }
 
-function scrollBottom() {
-  const msgs = document.getElementById('messages');
-  setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
-}
+function scrollBot() { const m=document.getElementById('messages'); setTimeout(()=>m.scrollTop=m.scrollHeight,50); }
+function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(); } }
+function autosize(el) { el.style.height=''; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
 
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-
-function autosize(el) {
-  el.style.height = '';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
-
-// ── WELCOME ───────────────────────────────────────────────────
 function showWelcome() {
-  setTimeout(() => {
-    botMessage(
-      "Welcome to <strong>PGS 2.0</strong>. I'm your digital publicist — I can help you schedule screenings, plan junkets, manage press guests, coordinate international markets, and generate reports.<br><br>What would you like to work on today?",
-      ["Schedule a screening","Plan a junket","Add press guests","Generate a report","International coordination"]
-    );
-  }, 400);
+  const scrCount  = DB.screenings.length;
+  const jnkActive = DB.junkets.filter(j=>j.status==='active').length;
+  const pressCount= DB.press.length;
+  setTimeout(() => botMessage(
+    `Welcome to <strong>PGS 2.0</strong>. Here's where things stand for <strong>Toy Story 5</strong>:<br><br>
+    🎬 <strong>${scrCount} screenings</strong> — all confirmed<br>
+    🎤 <strong>${jnkActive} active junket</strong> — June 3–7, Pixar<br>
+    📋 <strong>${pressCount} press guests</strong> credentialed<br><br>
+    What would you like to work on?`,
+    ["Schedule a screening","Plan a junket","Add press guests","Show my screenings","Show press list","Generate a report"]
+  ), 400);
 }
 
-// ── INIT ─────────────────────────────────────────────────────
+// ── INIT ─────────────────────────────────────────────────
+DB.init();
+updateCounts();
 showWelcome();
 document.getElementById('chat-input').focus();
 </script>
