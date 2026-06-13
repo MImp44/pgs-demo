@@ -275,6 +275,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sa
     <button class="w-pill" onclick="startChat('Add press guests')"><span class="w-pill-icon">📋</span>Add press guests</button>
     <button class="w-pill" onclick="startChat('Generate a report')"><span class="w-pill-icon">📊</span>Generate a report</button>
     <button class="w-pill" onclick="startChat('Show my screenings')"><span class="w-pill-icon">🔍</span>Show TS5 screenings</button>
+    <button class="w-pill" onclick="openPgsTs()"><span class="w-pill-icon">🎞️</span>Switch title</button>
   </div>
 
   <div class="w-footer">
@@ -283,6 +284,8 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sa
     <span class="w-footer-link" onclick="openRecords('overview')">Records <span id="w-rec-count" style="color:var(--navy);font-weight:600"></span></span>
     <span style="color:var(--border)">·</span>
     <span class="w-footer-link" onclick="openSettings()">Google Sheets</span>
+    <span style="color:var(--border)">·</span>
+    <span class="w-footer-link" onclick="openPgsTs()">Switch title</span>
   </div>
 </div>
 
@@ -471,7 +474,19 @@ function advanceFlow(input){const f=state.split('.')[0];const steps=FLOWS[f];if(
 // ── REPORT CARD ────────────────────────────────────────────
 function csv(h,r){const esc=v=>{const s=String(v==null?'':v);return(s.includes(',')||s.includes('"'))?'"'+s.replace(/"/g,'""')+'"':s;};return[h,...r].map(row=>row.map(esc).join(',')).join('\r\n');}
 function dlCSV(rt,film){const d=RD[rt];if(!d)return;const blob=new Blob(['﻿'+csv(d.h,d.r)],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(film+' - '+rt).replace(/[^a-z0-9 \-]/gi,'_')+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);return DB.logRpt(rt,film,'CSV',d.r.length);}
-function dlPDF(rt,film){const d=RD[rt];if(!d)return;const w=window.open('','_blank');const trs=d.r.map(r=>`<tr>${r.map(c=>`<td>${c||''}</td>`).join('')}</tr>`).join('');w.document.write(`<!DOCTYPE html><html><head><title>${rt} — ${film}</title><style>body{font-family:-apple-system,sans-serif;margin:0;color:#1A1A18;font-size:11px}.hdr{background:#0D2E52;color:#fff;padding:18px 28px}.badge{background:#C5A028;color:#0D2E52;font-weight:800;font-size:11px;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px}.title{font-size:16px;font-weight:600;margin-bottom:3px}.sub{font-size:10px;color:rgba(255,255,255,.6)}.content{padding:20px 28px}.meta{display:flex;gap:20px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #E8E7E1;font-size:10px;color:#666}table{width:100%;border-collapse:collapse}th{background:#0D2E52;color:#fff;padding:6px 8px;text-align:left;font-weight:600;font-size:9px}td{padding:5px 8px;border-bottom:1px solid #E8E7E1}tr:nth-child(even) td{background:#FAFAF8}.footer{margin-top:20px;padding-top:12px;border-top:1px solid #E8E7E1;font-size:9px;color:#999;display:flex;justify-content:space-between}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body onload="setTimeout(()=>window.print(),400)"><div class="hdr"><div class="badge">PGS 2.0</div><div class="title">${rt}</div><div class="sub">${film} · Walt Disney Studios Motion Pictures · ${new Date().toLocaleDateString()}</div></div><div class="content"><div class="meta"><span><strong>Report:</strong> ${rt}</span><span><strong>Film:</strong> ${film}</span><span><strong>Records:</strong> ${d.r.length}</span><span><strong>Generated:</strong> ${new Date().toLocaleString()}</span></div><table><thead><tr>${d.h.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${trs}</tbody></table><div class="footer"><span>PGS 2.0 — Publicity Global System</span><span>Walt Disney Studios Motion Pictures · Confidential</span></div></div></body></html>`);w.document.close();DB.logRpt(rt,film,'PDF',d.r.length);}
+function dlPDF(rt,film){const d=RD[rt];if(!d)return;const w=window.open('','_blank');const trs=d.r.map(r=>`<tr>${r.map(c=>`<td>${c||''}</td>`).join('')}</tr>`).join('');w.document.write(`<!DOCTYPE html><html><head><title>${rt} — ${film}</title><style>body{font-family:-apple-system,sans-serif;margin:0;color:#1A1A18;font-size:11px}.hdr{background:#0D2E52;color:#fff;padding:18px 28px}.badge{background:#C5A028;color:#0D2E52;font-weight:800;font-size:11px;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px}.title{font-size:16px;font-weight:600;margin-bottom:3px}.sub{font-size:10px;color:rgba(255,255,255,.6)}.content{padding:20px 28px}.meta{display:flex;gap:20px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #E8E7E1;font-size:10px;color:#666}table{width:100%;border-collapse:collapse}th{background:#0D2E52;color:#fff;padding:6px 8px;text-align:left;font-weight:600;font-size:9px}td{padding:5px 8px;border-bottom:1px solid #E8E7E1}tr:nth-child(even) td{background:#FAFAF8}.footer{margin-top:20px;padding-top:12px;border-top:1px solid #E8E7E1;font-size:9px;color:#999;display:flex;justify-content:space-between}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body onload="setTimeout(()=>window.print(),400)"><div class="hdr"><div class="badge">PGS 2.0</div><div class="title">${rt}</div><div class="sub">${film} · Walt Disney Studios Motion Pictures · ${new Date().toLocaleDateString()}</div></div><div class="content"><div class="meta"><span><strong>Report:</strong> ${rt}</span><span><strong>Film:</strong> ${film}</span><span><strong>Records:</strong> ${d.r.length}</span><span><strong>Generated:</strong> ${new Date().toLocaleString()}</span></div><table><thead><tr>${d.h.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${trs}</tbody></table><div class="footer"><span>PGS 2.0 — Publicity Global System</span><span>Walt Disney Studios Motion Pictures · Confidential</span></div></div>
+<!-- TITLE SWITCHER MODAL -->
+<div style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center" id="pgs-ts-overlay" onclick="closePgsTs()">
+  <div style="background:#fff;border-radius:14px;width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;border:1px solid #E5E3DC" onclick="event.stopPropagation()">
+    <div style="background:#0D2E52;padding:16px 20px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:14px;font-weight:600;color:#fff;flex:1">Disney Marketing — Full Slate</span>
+      <button onclick="closePgsTs()" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;line-height:1">&#x2715;</button>
+    </div>
+    <div style="overflow-y:auto;padding:14px;font-family:-apple-system,sans-serif" id="pgs-ts-body"></div>
+  </div>
+</div>
+
+</body></html>`);w.document.close();DB.logRpt(rt,film,'PDF',d.r.length);}
 
 function showRptCard(){
   const film='Toy Story 5',rt=ctx.type,d=RD[rt],n=d?d.r.length:0,uid='r'+Date.now();
@@ -545,8 +560,103 @@ function rpTab(tab,el){document.querySelectorAll('.rp-tab').forEach(t=>t.classLi
   else if(tab==='reports'){b.innerHTML=DB.rpts.length?`<div class="rp-sec">${DB.rpts.length} reports generated</div>${DB.rpts.map(r=>`<div class="rec-item"><div class="rec-ico">${r.format==='PDF'?'📄':'📊'}</div><div style="flex:1"><div class="rec-title">${r.reportType}</div><div class="rec-meta">${r.film} · ${r.rowCount} rows · ${r.at}</div></div><span class="b ${r.format==='PDF'?'bv':'bg'}">${r.format}</span></div>`).join('')}${getURL()?'<div style="margin-top:10px;font-size:10px;color:var(--muted)">✓ Logged to Google Sheets</div>':'<div style="margin-top:10px;font-size:10px;color:var(--muted)">Connect Google Sheets to log reports automatically.</div>'}`:`<div style="text-align:center;padding:40px;color:var(--muted);font-size:12px">No reports yet.<br><br><button class="btn-p" onclick="closeRecords();startChat('Generate a report')" style="margin-top:8px;font-size:12px;padding:7px 14px">Generate a report</button></div>`;}
 }
 
+
+// ══════════════════════════════════════════════════════════════
+// DISNEY MARKETING PLATFORM — UNIFIED SLATE DATA LAYER
+// Walt Disney Studios Motion Pictures · As of 5/15/26
+// Shared backend brain across all marketing tools (PGS, CD, etc.)
+// ══════════════════════════════════════════════════════════════
+const DISNEY_SLATE = [
+  {year:'2026', films:[
+    {date:'5/22/26', studio:'Disney',      title:'Star Wars: The Mandalorian and Grogu', status:'active',   genre:'Live Action / Franchise'},
+    {date:'6/19/26', studio:'Disney',      title:'Toy Story 5',                           status:'active',   genre:'Animation / Franchise'},
+    {date:'7/10/26', studio:'Disney',      title:'Moana',                                 status:'active',   genre:'Live Action'},
+    {date:'8/7/26',  studio:'Searchlight', title:'Super Troopers 3',                      status:'upcoming', genre:'Comedy'},
+    {date:'8/28/26', studio:'20th',        title:'The Dog Stars',                         status:'upcoming', genre:'Drama'},
+    {date:'9/11/26', studio:'Disney',      title:'Untitled Oasis Documentary',            status:'upcoming', genre:'Documentary'},
+    {date:'9/25/26', studio:'Disney',      title:'Avengers: Endgame (Re-Release)',        status:'upcoming', genre:'Marvel / Re-Release'},
+    {date:'10/16/26',studio:'20th',        title:'Whalefall',                             status:'upcoming', genre:'Drama'},
+    {date:'11/6/26', studio:'Searchlight', title:'Wild Horse Nine',                       status:'upcoming', genre:'Drama'},
+    {date:'11/25/26',studio:'Disney',      title:"Disney's Hexed",                        status:'upcoming', genre:'Animation'},
+    {date:'12/18/26',studio:'Disney',      title:'Avengers: Doomsday',                   status:'upcoming', genre:'Marvel / Franchise', flagship:true},
+  ]},
+  {year:'2027', films:[
+    {date:'2/5/27',  studio:'20th',        title:'Ice Age: Boiling Point',                status:'upcoming', genre:'Animation / Franchise'},
+    {date:'2/19/27', studio:'Disney',      title:'Star Wars: A New Hope (50th Anniversary)', status:'upcoming', genre:'Live Action / Anniversary'},
+    {date:'3/5/27',  studio:'Disney',      title:'Gatto',                                 status:'upcoming', genre:'Animation'},
+    {date:'4/2/27',  studio:'Disney',      title:'Untitled Disney',                       status:'upcoming', genre:'TBD'},
+    {date:'4/30/27', studio:'Searchlight', title:'Monitor',                               status:'upcoming', genre:'Drama'},
+    {date:'5/7/27',  studio:'20th',        title:'Beach Read',                            status:'upcoming', genre:'Romance'},
+    {date:'5/28/27', studio:'Disney',      title:'Star Wars: Starfighter',                status:'upcoming', genre:'Live Action / Franchise'},
+    {date:'8/6/27',  studio:'Disney',      title:'Untitled Bluey Movie',                  status:'upcoming', genre:'Animation'},
+    {date:'9/3/27',  studio:'20th',        title:'Untitled The Simpsons Movie',           status:'upcoming', genre:'Animation'},
+    {date:'9/17/27', studio:'Disney',      title:'Untitled Disney',                       status:'upcoming', genre:'TBD'},
+    {date:'10/8/27', studio:'Disney',      title:'Untitled Disney',                       status:'upcoming', genre:'TBD'},
+    {date:'11/5/27', studio:'Disney',      title:'Untitled Disney',                       status:'upcoming', genre:'TBD'},
+    {date:'11/24/27',studio:'Disney',      title:'Frozen 3',                              status:'upcoming', genre:'Animation / Franchise'},
+    {date:'12/17/27',studio:'Disney',      title:'Avengers: Secret Wars',                status:'upcoming', genre:'Marvel / Franchise', flagship:true},
+  ]},
+  {year:'2028', films:[
+    {date:'5/26/28', studio:'Disney',      title:'Lilo & Stitch 2',                       status:'upcoming', genre:'Live Action / Franchise'},
+    {date:'6/16/28', studio:'Disney',      title:'Incredibles 3',                         status:'upcoming', genre:'Animation / Franchise'},
+    {date:'12/15/28',studio:'Disney',      title:'Untitled Marvel',                       status:'upcoming', genre:'Marvel'},
+  ]},
+  {year:'2029', films:[
+    {date:'12/21/29',studio:'20th',        title:'Avatar 4',                              status:'upcoming', genre:'Live Action / Franchise'},
+  ]},
+  {year:'2031', films:[
+    {date:'12/19/31',studio:'20th',        title:'Avatar 5',                              status:'upcoming', genre:'Live Action / Franchise'},
+  ]},
+];
+
+// Title switcher state
+let pgsActiveTitle = localStorage.getItem('pgs_active_title') || 'Toy Story 5';
+let pgsActiveRelease = localStorage.getItem('pgs_active_release') || 'June 19, 2026';
+
+function setPgsTitle(title, date) {
+  pgsActiveTitle = title;
+  pgsActiveRelease = date;
+  localStorage.setItem('pgs_active_title', title);
+  localStorage.setItem('pgs_active_release', date);
+  updateTitleDisplay();
+}
+
+function updateTitleDisplay() {
+  const txt = document.getElementById('w-status-txt');
+  if (txt) txt.textContent = pgsActiveTitle + ' · ' + pgsActiveRelease;
+  const cb = document.getElementById('cb-active-title-text');
+  if (cb) cb.textContent = '· ' + pgsActiveTitle;
+}
+
+
+function openPgsTs() {
+  const body = document.getElementById('pgs-ts-body');
+  let html = '';
+  DISNEY_SLATE.forEach(yr => {
+    html += `<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#9A9A96;margin:10px 0 6px">${yr.year}</div>`;
+    yr.films.forEach(f => {
+      const isActive = f.title === pgsActiveTitle;
+      // Parse release date for display
+      const parts = f.date.split('/');
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const releaseStr = months[parseInt(parts[0])-1] + ' ' + parseInt(parts[1]) + ', 20' + parts[2];
+      html += `<div onclick="setPgsTitle('${f.title.replace(/'/g,"\'")}','${releaseStr}');closePgsTs()" style="display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;cursor:pointer;background:${isActive?'#E6F1FB':'transparent'};transition:background .1s" onmouseover="if(!${isActive})this.style.background='#F4F3EF'" onmouseout="if(!${isActive})this.style.background='transparent'">
+        <span style="font-size:10px;color:#9A9A96;width:58px;flex-shrink:0">${f.date}</span>
+        <span style="font-size:9px;color:#9A9A96;width:70px;flex-shrink:0">${f.studio}</span>
+        <span style="font-size:13px;font-weight:500;color:#1A1A18;flex:1">${f.title}${f.flagship?` <span style="background:#C5A028;color:#fff;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;vertical-align:middle">FLAGSHIP</span>`:''}</span>
+        ${isActive ? '<span style="background:#0D2E52;color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px">ACTIVE</span>' : ''}
+      </div>`;
+    });
+  });
+  body.innerHTML = html;
+  document.getElementById('pgs-ts-overlay').style.display = 'flex';
+}
+function closePgsTs() {
+  document.getElementById('pgs-ts-overlay').style.display = 'none';
+}
+
 // ── INIT ───────────────────────────────────────────────────
-DB.init();updateCounts();updateSheetsDots();
+DB.init();updateCounts();updateSheetsDots();updateTitleDisplay();
 document.getElementById('w-input').focus();
 </script>
 </body>
