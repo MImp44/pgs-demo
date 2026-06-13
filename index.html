@@ -542,7 +542,9 @@ function addTbl(headers,rows){addHtml(`<div class="mini-wrap"><table class="mini
 function addChips(chips){const co=document.createElement('div');co.className='chip-outer';const ci=document.createElement('div');ci.className='chip-inner';const cr=document.createElement('div');cr.className='chip-row';chips.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c;b.onclick=()=>chipSend(c);cr.appendChild(b);});ci.appendChild(cr);co.appendChild(ci);document.getElementById('messages').appendChild(co);scrollBot();}
 function userMsg(t){removeChips();const m=document.getElementById('messages');const o=document.createElement('div');o.className='msg-outer';const i=document.createElement('div');i.className='msg-inner';const r=document.createElement('div');r.className='msg-row user';r.innerHTML=`<div class="av user">MI</div><div class="bubble user">${t}</div>`;i.appendChild(r);o.appendChild(i);m.appendChild(o);scrollBot();}
 function chipSend(t){userMsg(t);setE(false);showTyping();setTimeout(()=>{hideTyping();setE(true);respond(t);document.getElementById('chat-input').focus();},480);}
-function sendMsg(){const i=document.getElementById('chat-input');const t=i.value.trim();if(!t)return;enterChat();userMsg(t);i.value='';i.style.height='';setE(false);showTyping();setTimeout(()=>{hideTyping();setE(true);respond(t);i.focus();},550);}
+function sendMsg(){const i=document.getElementById('chat-input');const t=i.value.trim();if(!t)return;enterChat();userMsg(t);i.value='';i.style.height='';setE(false);showTyping();
+  const _k=getAIKey();
+  if(_k){callClaude(t,PGS_SYSTEM_PROMPT,(r)=>{hideTyping();setE(true);botMsg(r);i.focus();});}else setTimeout(()=>{hideTyping();setE(true);respond(t);i.focus();},550);}
 function setE(on){document.getElementById('chat-input').disabled=!on;document.getElementById('send-btn').disabled=!on;}
 function scrollBot(){const m=document.getElementById('messages');setTimeout(()=>m.scrollTop=m.scrollHeight,50);}
 function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
@@ -658,6 +660,73 @@ function closePgsTs() {
 // ── INIT ───────────────────────────────────────────────────
 DB.init();updateCounts();updateSheetsDots();updateTitleDisplay();
 document.getElementById('w-input').focus();
+
+// ── ANTHROPIC AI INTEGRATION ───────────────────────────────────────
+const AI_STORAGE_KEY='dmp_anthropic_key';
+let convHistory=[];
+
+function getAIKey(){return localStorage.getItem(AI_STORAGE_KEY)||'';}
+function saveAIKey(k){localStorage.setItem(AI_STORAGE_KEY,k);}
+function clearAIKey(){localStorage.removeItem(AI_STORAGE_KEY);}
+
+function showAIKeyModal(msg){
+  const old=document.getElementById('ai-modal');if(old)old.remove();
+  const d=document.createElement('div');
+  d.id='ai-modal';
+  d.innerHTML=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px"><div style="background:#12121e;border:1px solid rgba(200,168,75,.35);border-radius:14px;padding:28px 30px;width:400px;max-width:100%"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8A84B" stroke-width="2.5" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5M2 17l10 5 10-5M2 12l10 5 10-5"/></svg><div style="font-size:15px;font-weight:700;color:#fff">Connect Claude AI</div></div><div style="font-size:11px;color:#888;margin-bottom:18px;line-height:1.6">${msg||'Enter your Anthropic API key to enable live AI responses. Stored in this browser only.'}</div><input id="ai-key-inp" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-api03-..." style="width:100%;background:#0a0a18;border:1px solid rgba(200,168,75,.3);border-radius:8px;padding:10px 12px;font-size:12px;font-family:monospace;color:#fff;outline:none;margin-bottom:12px;box-sizing:border-box" onkeydown="if(event.key==='Enter')doConnectKey()"><div style="display:flex;gap:8px;margin-bottom:14px"><button onclick="doConnectKey()" style="background:#C8A84B;color:#06060E;border:none;border-radius:7px;padding:9px 0;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;flex:1">Connect</button><button onclick="document.getElementById('ai-modal').remove()" style="background:transparent;color:#666;border:1px solid #2a2a3a;border-radius:7px;padding:9px 16px;font-size:12px;cursor:pointer;font-family:inherit">Cancel</button></div><div style="font-size:10px;color:#444;line-height:1.6">Get a key at <a href="https://console.anthropic.com" target="_blank" style="color:#C8A84B">console.anthropic.com</a></div></div></div>`;
+  document.body.appendChild(d);
+  setTimeout(()=>document.getElementById('ai-key-inp')?.focus(),50);
+}
+
+function doConnectKey(){
+  const k=(document.getElementById('ai-key-inp')?.value||'').trim();
+  if(!k){alert('Please enter your API key.');return;}
+  if(!k.startsWith('sk-ant-')){alert('API keys start with sk-ant- — check the format.');return;}
+  saveAIKey(k);document.getElementById('ai-modal').remove();
+  updateAIStatus();convHistory=[];
+  botMsg('Claude AI connected. Dynamic responses now live. What would you like to explore?',[]);
+}
+
+function disconnectAI(){clearAIKey();updateAIStatus();convHistory=[];}
+
+function updateAIStatus(){
+  const btn=document.getElementById('ai-connect-btn');if(!btn)return;
+  const on=!!getAIKey();
+  btn.textContent=on?'\u2726 AI live':'Connect AI';
+  btn.style.color=on?'#4ade80':'#C8A84B';
+  btn.style.borderColor=on?'rgba(74,222,128,.3)':'rgba(200,168,75,.25)';
+  btn.title=on?'AI connected \u2014 click to disconnect':'Connect Claude AI for live responses';
+  btn.onclick=on?()=>{if(confirm('Disconnect Claude AI?'))disconnectAI();}:()=>showAIKeyModal();
+}
+
+async function callClaude(userText,sysPrompt,onDone){
+  const key=getAIKey();if(!key){showAIKeyModal();return;}
+  convHistory.push({role:'user',content:userText});
+  if(convHistory.length>20)convHistory=convHistory.slice(-20);
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'x-api-key':key,'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1024,system:sysPrompt,messages:convHistory})
+    });
+    if(!resp.ok){
+      const err=await resp.json().catch(()=>({}));
+      if(resp.status===401){clearAIKey();updateAIStatus();showAIKeyModal('Key invalid or expired. Enter a new one.');return;}
+      throw new Error(err.error?.message||'HTTP '+resp.status);
+    }
+    const data=await resp.json();
+    const text=data.content?.[0]?.text||'(no response)';
+    convHistory.push({role:'assistant',content:text});
+    onDone(text);
+  }catch(e){
+    console.error('Claude:',e);hideTyping();setE(true);
+    botMsg('Could not reach Claude: '+e.message);
+  }
+}
+
+const PGS_SYSTEM_PROMPT='You are the PGS AI (Publicity Green Sheet) for Disney Studios theatrical marketing, specializing in theatrical publicity operations. EXPERTISE: press screenings (venue, guest lists, RSVP, day-of rundowns), talent junkets (scheduling, room assignments, journalist rotations, embargos), press day planning (timeline, access points, media tiers, photo calls), international coordination (territory strategy, local partners), media relations (outlet prioritization, exclusives, critic/trade/consumer tiers). ACTIVE TITLES: Toy Story 5 (Jun 19 2026, Pixar, press day TBD, cross-company priority), Mandalorian & Grogu (May 22 2026, complete), Avengers: Doomsday (Dec 18 2026, planning phase), Moana Live-Action (Jul 10 2026). Answer with operational precision. Flag confirmed vs TBD. Be concise and action-oriented. Internal Disney Studios tool.';
+
+document.addEventListener('DOMContentLoaded',()=>updateAIStatus());
 </script>
 </body>
 </html>
