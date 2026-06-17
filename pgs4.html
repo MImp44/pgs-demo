@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PGS 4.0 — Publicity Operations</title>
+<style>
+:root{
+  --bg:#06060E;--surface:#0F0F1C;--surface2:#161626;--surface3:#1E1E30;
+  --border:#1E1E30;--border2:#2A2A40;
+  --text:#E8E8F0;--muted:#8888A8;--subtle:#4A4A6A;
+  --gold:#C8A84B;--gold-l:rgba(200,168,75,.12);--gold-d:#A88830;
+  --blue:#60A5FA;--blue-l:rgba(96,165,250,.12);
+  --green:#4ADE80;--green-l:rgba(74,222,128,.1);
+  --red:#F87171;--red-l:rgba(248,113,113,.1);
+  --orange:#FB923C;--orange-l:rgba(251,146,60,.1);
+  --purple:#A78BFA;--purple-l:rgba(167,139,250,.1);
+  --r:10px;--rs:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;font-size:13px}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* CHAT */
+#cv{height:100vh;display:flex;flex-direction:column}
+.chat-hdr{padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.pgs-badge{background:var(--gold);color:#06060E;font-size:11px;font-weight:800;padding:3px 7px;border-radius:4px;letter-spacing:.4px}
+.title-pill{background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;color:var(--text);display:flex;align-items:center;gap:6px;font-family:inherit;transition:all .15s}
+.title-pill:hover{border-color:var(--gold);color:var(--gold)}
+.tp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--muted)}
+#chat-msgs{flex:1;overflow-y:auto;padding:20px 0;display:flex;flex-direction:column;gap:3px}
+.msg{padding:3px 20px;display:flex;flex-direction:column;gap:6px}
+.msg-bot{align-items:flex-start}
+.msg-user{align-items:flex-end}
+.bubble{max-width:520px;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.6}
+.msg-bot .bubble{background:var(--surface);border:1px solid var(--border2);border-bottom-left-radius:4px}
+.msg-user .bubble{background:var(--gold);color:#06060E;font-weight:600;border-bottom-right-radius:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;max-width:560px}
+.chip{background:var(--surface2);border:1px solid var(--border2);border-radius:18px;padding:5px 13px;font-size:11px;font-weight:600;cursor:pointer;color:var(--text);font-family:inherit;transition:all .1s;white-space:nowrap}
+.chip:hover{background:var(--surface3);border-color:var(--gold);color:var(--gold)}
+.chip-t{border-radius:8px;max-width:240px;overflow:hidden;text-overflow:ellipsis;text-align:left}
+.chat-footer{background:var(--surface);border-top:1px solid var(--border2);padding:10px 20px;flex-shrink:0}
+#idle-chips{display:none;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chat-input-row{display:flex;gap:8px}
+.chat-in{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:24px;padding:9px 16px;font-size:13px;font-family:inherit;color:var(--text);outline:none;transition:border-color .15s}
+.chat-in:focus{border-color:var(--gold)}
+.chat-send{background:var(--gold);border:none;border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;color:#06060E;font-weight:800;flex-shrink:0}
+.chat-send:hover{background:var(--gold-d)}
+code{background:var(--surface3);padding:1px 5px;border-radius:3px;font-size:11px;font-family:monospace}
+
+/* DASHBOARD */
+#dv{display:none;height:100vh}
+#dv.open{display:flex}
+.sidebar{width:224px;background:var(--surface);border-right:1px solid var(--border2);display:flex;flex-direction:column;flex-shrink:0}
+.sb-logo{padding:10px 14px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:7px}
+.sb-badge{background:var(--gold);color:#06060E;font-size:11px;font-weight:800;padding:3px 7px;border-radius:4px}
+.sb-name{font-size:12px;font-weight:700}.sb-ver{font-size:9px;color:var(--muted)}
+.nav-lbl{padding:10px 12px 4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--subtle)}
+.nav-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--rs);cursor:pointer;font-size:12px;color:var(--muted);transition:all .1s;margin:1px 6px;border:none;background:none;width:calc(100% - 12px);text-align:left;font-family:inherit}
+.nav-btn:hover{background:var(--surface2);color:var(--text)}
+.nav-btn.on{background:var(--gold-l);color:var(--gold);border:1px solid rgba(200,168,75,.2)}
+.titles-list{flex:1;overflow-y:auto;border-top:1px solid var(--border2)}
+.title-row{padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s;display:flex;align-items:center;gap:7px}
+.title-row:hover{background:var(--surface2)}
+.title-row.on{background:var(--gold-l);border-left:2px solid var(--gold)}
+.t-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.t-name{font-size:11px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t-date{font-size:9px;color:var(--muted)}
+.t-stage{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;text-transform:uppercase;flex-shrink:0}
+.s-plan{background:var(--blue-l);color:var(--blue)}.s-act{background:var(--gold-l);color:var(--gold)}.s-done{background:var(--green-l);color:var(--green)}
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.topbar{padding:13px 22px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:10px;background:var(--surface);flex-shrink:0}
+.topbar-h{font-size:16px;font-weight:700;flex:1}.topbar-sub{font-size:11px;color:var(--muted)}
+.content{flex:1;overflow-y:auto;padding:22px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--rs);font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-family:inherit;transition:all .1s}
+.btn:hover{background:var(--surface3)}.btn-g{background:var(--gold);color:#06060E;border:none}.btn-g:hover{background:var(--gold-d)}.btn-xs{padding:4px 8px;font-size:10px}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px}
+.s-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:14px 16px}
+.s-val{font-size:26px;font-weight:800;letter-spacing:-1px;margin-bottom:2px}.s-lbl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}.s-sub{font-size:10px;color:var(--subtle);margin-top:2px}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.sec-h{font-size:13px;font-weight:700}.sec-sub{font-size:11px;color:var(--muted)}
+.pipe-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.pipe-tbl th{background:var(--surface2);color:var(--muted);padding:7px 10px;text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border2);white-space:nowrap}
+.pipe-tbl td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.pipe-tbl tr:hover td{background:var(--surface)}
+.tabs{display:flex;border-bottom:1px solid var(--border2);margin-bottom:18px}
+.tab{padding:9px 16px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit}
+.tab:hover{color:var(--text)}.tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.t-hdr{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:18px 22px;margin-bottom:18px;display:flex;align-items:flex-start;gap:18px}
+.t-hdr-name{font-size:20px;font-weight:800;letter-spacing:-.4px;margin-bottom:3px}
+.t-hdr-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border2);border-radius:var(--rs);overflow:hidden;min-width:300px}
+.hs{background:var(--surface2);padding:11px 14px;text-align:center}.hs-val{font-size:18px;font-weight:800;color:var(--gold)}.hs-lbl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:1px}
+.jk-sec{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
+.jk-sec-hdr{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2)}
+.jk-sec-t{font-size:12px;font-weight:700}.jk-body{padding:14px}
+.roster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.r-card{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 11px;display:flex;align-items:center;gap:9px}
+.r-av{width:30px;height:30px;border-radius:50%;background:var(--gold-l);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold);flex-shrink:0}
+.r-name{font-size:11px;font-weight:600}.r-role{font-size:9px;color:var(--muted)}
+.r-del{margin-left:auto;background:none;border:none;color:var(--subtle);cursor:pointer;font-size:13px;padding:1px}.r-del:hover{color:var(--red)}
+.sched-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.sched-tbl th{background:var(--surface2);color:var(--muted);padding:6px 9px;text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border2)}
+.sched-tbl td{padding:7px 9px;border-bottom:1px solid var(--border);vertical-align:middle}
+.sched-tbl tr:hover td{background:var(--surface2)}
+.tc{background:var(--surface3);border:1px solid var(--border2);padding:1px 7px;border-radius:3px;font-size:9px;font-family:monospace;color:var(--text)}
+.jt{background:var(--blue-l);color:var(--blue);border-radius:3px;padding:1px 6px;font-size:9px;font-weight:600}
+.tt{background:var(--gold-l);color:var(--gold);border-radius:3px;padding:1px 6px;font-size:9px;font-weight:600}
+.rt{background:var(--purple-l);color:var(--purple);border-radius:3px;padding:1px 6px;font-size:9px;font-weight:600}
+.sc-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:14px;margin-bottom:10px;display:flex;gap:14px}
+.sc-date{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:7px 10px;text-align:center;min-width:52px;flex-shrink:0}
+.sc-mo{font-size:8px;font-weight:700;text-transform:uppercase;color:var(--muted)}.sc-dy{font-size:20px;font-weight:800;line-height:1;color:var(--gold)}
+.sc-info{flex:1}.sc-name{font-size:12px;font-weight:700;margin-bottom:3px}.sc-meta{display:flex;gap:9px;flex-wrap:wrap}.sc-m{font-size:10px;color:var(--muted)}
+.s-badge{font-size:8px;font-weight:700;padding:2px 7px;border-radius:9px;text-transform:uppercase}
+.sb-pend{background:var(--blue-l);color:var(--blue)}.sb-conf{background:var(--green-l);color:var(--green)}.sb-canc{background:var(--red-l);color:var(--red)}
+.hl-item{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 14px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start}
+.hl-cat{font-size:7px;font-weight:800;text-transform:uppercase;padding:2px 6px;border-radius:3px;flex-shrink:0;margin-top:1px}
+.hl-pr{background:var(--blue-l);color:var(--blue)}.hl-di{background:var(--purple-l);color:var(--purple)}.hl-so{background:var(--orange-l);color:var(--orange)}.hl-br{background:var(--gold-l);color:var(--gold)}.hl-ge{background:var(--surface2);color:var(--muted);border:1px solid var(--border2)}
+.hl-t{font-size:11px;font-weight:600;margin-bottom:2px}.hl-d{font-size:10px;color:var(--muted);line-height:1.5}
+.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-wrap.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);width:460px;max-width:100%;overflow:hidden}
+.modal-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-t{font-size:13px;font-weight:700}.modal-x{background:none;border:none;color:var(--muted);font-size:17px;cursor:pointer}
+.modal-body{padding:18px}
+.f-row{margin-bottom:12px}.f-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.f-lbl{font-size:10px;font-weight:600;color:var(--text);margin-bottom:4px;display:block}
+.f-inp{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:8px 11px;font-size:12px;font-family:inherit;color:var(--text);outline:none}
+.f-inp:focus{border-color:var(--gold)}.modal-foot{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.empty{text-align:center;padding:36px 20px;color:var(--muted)}.empty-ico{font-size:28px;margin-bottom:10px;opacity:.5}.empty-t{font-size:13px;font-weight:600;margin-bottom:4px;color:var(--text)}.empty-s{font-size:11px;line-height:1.6}
+.ag-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.ag-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:16px}.ag-t{font-size:12px;font-weight:700;margin-bottom:10px}
+.br-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:10px}
+.br-lbl{width:110px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;font-size:10px}
+.br-track{flex:1;background:var(--surface2);border-radius:3px;height:5px;overflow:hidden}.br-fill{height:100%;border-radius:3px}.br-v{width:24px;text-align:right;color:var(--text);font-weight:700;font-size:9px;flex-shrink:0}
+.cal-ev{display:flex;gap:10px;align-items:center;padding:9px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--rs);margin-bottom:5px}
+</style>
+</head>
+<body>
+
+<!-- ══ CHAT VIEW ══ -->
+<div id="cv">
+  <div class="chat-hdr">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="display:flex;align-items:center;gap:7px">
+        <span class="pgs-badge">PGS</span>
+        <span style="font-size:10px;color:var(--muted);font-weight:700">4.0</span>
+      </div>
+      <button class="title-pill" id="title-pill" onclick="startFlow('switchtitle')">
+        <span class="tp-dot" id="tp-dot"></span>
+        <span id="tp-name">Select title ▾</span>
+      </button>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:10px;color:var(--subtle)">Walt Disney Studios</span>
+      <button class="btn btn-g" onclick="showDash()">Dashboard →</button>
+    </div>
+  </div>
+  <div id="chat-msgs" class="chat-msgs"></div>
+  <div class="chat-footer">
+    <div id="idle-chips">
+      <button class="chip" onclick="sendChip('Schedule a screening')">🎬 Screen a title</button>
+      <button class="chip" onclick="sendChip('Plan a junket')">🎤 Plan junket</button>
+      <button class="chip" onclick="sendChip('Add talent')">⭐ Add talent</button>
+      <button class="chip" onclick="sendChip('Add press contact')">📋 Add press</button>
+      <button class="chip" onclick="sendChip('Log a highlight')">✨ Log highlight</button>
+      <button class="chip" onclick="sendChip('Generate a report')">📊 Get report</button>
+      <button class="chip" onclick="sendChip('Switch title')">🎞 Switch title</button>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-in" class="chat-in" placeholder="Type or tap a shortcut above…" onkeydown="if(event.key==='Enter')sendMsg()">
+      <button class="chat-send" onclick="sendMsg()">↑</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD VIEW ══ -->
+<div id="dv">
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <button class="btn btn-xs" onclick="showChat()">← Chat</button>
+      <span class="sb-badge">PGS</span>
+      <div><div class="sb-name">Publicity Ops <span class="sb-ver">4.0</span></div></div>
+    </div>
+    <div style="padding:5px 5px 0">
+      <div class="nav-lbl">Navigation</div>
+      <button class="nav-btn on" id="nb-dash" onclick="gv('dash')"><span>📊</span>Dashboard</button>
+      <button class="nav-btn" id="nb-cal" onclick="gv('cal')"><span>📅</span>Calendar</button>
+      <button class="nav-btn" id="nb-rep" onclick="gv('rep')"><span>📋</span>Reports</button>
+      <div class="nav-lbl" style="margin-top:6px">Titles</div>
+    </div>
+    <div class="titles-list" id="titles-list"></div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div style="flex:1"><div class="topbar-h" id="tb-h">Dashboard</div><div class="topbar-sub" id="tb-s">Walt Disney Studios · Publicity Operations</div></div>
+      <div style="display:flex;gap:7px" id="tb-act"></div>
+    </div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<!-- ══ MODALS ══ -->
+<div class="modal-wrap" id="m-talent">
+  <div class="modal">
+    <div class="modal-hdr"><span class="modal-t">Add Talent</span><button class="modal-x" onclick="cm('m-talent')">✕</button></div>
+    <div class="modal-body">
+      <div class="f-row"><label class="f-lbl">Name</label><input class="f-inp" id="t-n" placeholder="e.g. Tom Hanks"></div>
+      <div class="f-row"><label class="f-lbl">Role / Character</label><input class="f-inp" id="t-r" placeholder="e.g. Woody (Voice)"></div>
+      <div class="f-row"><label class="f-lbl">Availability Notes</label><input class="f-inp" id="t-a" placeholder="e.g. No back-to-back over 3hrs"></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="cm('m-talent')">Cancel</button><button class="btn btn-g" onclick="svTalent()">Add Talent</button></div>
+  </div>
+</div>
+<div class="modal-wrap" id="m-press">
+  <div class="modal">
+    <div class="modal-hdr"><span class="modal-t">Add Press Contact</span><button class="modal-x" onclick="cm('m-press')">✕</button></div>
+    <div class="modal-body">
+      <div class="f-row-2"><div><label class="f-lbl">Name</label><input class="f-inp" id="p-n" placeholder="Reporter name"></div><div><label class="f-lbl">Outlet</label><input class="f-inp" id="p-o" placeholder="e.g. Variety"></div></div>
+      <div class="f-row"><label class="f-lbl">Interview Type</label><select class="f-inp" id="p-t"><option>Print / Online</option><option>Broadcast / TV</option><option>Podcast / Audio</option><option>Photography</option><option>Wire / Trade</option></select></div>
+      <div class="f-row-2"><div><label class="f-lbl">Room</label><input class="f-inp" id="p-rm" placeholder="e.g. Suite B"></div><div><label class="f-lbl">Minutes</label><input class="f-inp" id="p-m" type="number" value="15" min="5" max="60"></div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="cm('m-press')">Cancel</button><button class="btn btn-g" onclick="svPress()">Add Contact</button></div>
+  </div>
+</div>
+<div class="modal-wrap" id="m-screen">
+  <div class="modal">
+    <div class="modal-hdr"><span class="modal-t">Add Screening</span><button class="modal-x" onclick="cm('m-screen')">✕</button></div>
+    <div class="modal-body">
+      <div class="f-row"><label class="f-lbl">Screening Type</label><select class="f-inp" id="sc-t"><option>Press Screening</option><option>Trade Screening</option><option>Industry / Guild</option><option>Premiere</option><option>Fan Screening</option><option>Awards Consideration</option></select></div>
+      <div class="f-row-2"><div><label class="f-lbl">Date</label><input class="f-inp" id="sc-d" type="date"></div><div><label class="f-lbl">Time</label><input class="f-inp" id="sc-ti" type="time" value="19:00"></div></div>
+      <div class="f-row"><label class="f-lbl">Venue</label><input class="f-inp" id="sc-v" placeholder="e.g. AMC Century City"></div>
+      <div class="f-row-2"><div><label class="f-lbl">City</label><input class="f-inp" id="sc-c" placeholder="e.g. Los Angeles, CA"></div><div><label class="f-lbl">Capacity</label><input class="f-inp" id="sc-cap" type="number" placeholder="300"></div></div>
+      <div class="f-row"><label class="f-lbl">Embargo / Notes</label><input class="f-inp" id="sc-n" placeholder="e.g. Embargo lifts opening day 6am PT"></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="cm('m-screen')">Cancel</button><button class="btn btn-g" onclick="svScreen()">Add Screening</button></div>
+  </div>
+</div>
+<div class="modal-wrap" id="m-att">
+  <div class="modal">
+    <div class="modal-hdr"><span class="modal-t" id="att-t">Add Attendee</span><button class="modal-x" onclick="cm('m-att')">✕</button></div>
+    <div class="modal-body">
+      <div class="f-row-2"><div><label class="f-lbl">Name</label><input class="f-inp" id="a-n" placeholder="Full name"></div><div><label class="f-lbl">Outlet / Affiliation</label><input class="f-inp" id="a-o" placeholder="e.g. Hollywood Reporter"></div></div>
+      <div class="f-row"><label class="f-lbl">RSVP Status</label><select class="f-inp" id="a-r"><option value="invited">Invited</option><option value="confirmed">Confirmed</option><option value="waitlist">Waitlist</option><option value="declined">Declined</option></select></div>
+      <div class="f-row"><label class="f-lbl">Notes</label><input class="f-inp" id="a-no" placeholder="e.g. Needs plus-one, ADA access"></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="cm('m-att')">Cancel</button><button class="btn btn-g" onclick="svAtt()">Add Attendee</button></div>
+  </div>
+</div>
+<div class="modal-wrap" id="m-hl">
+  <div class="modal">
+    <div class="modal-hdr"><span class="modal-t">Add Campaign Highlight</span><button class="modal-x" onclick="cm('m-hl')">✕</button></div>
+    <div class="modal-body">
+      <div class="f-row-2"><div><label class="f-lbl">Date</label><input class="f-inp" id="h-d" type="date"></div><div><label class="f-lbl">Category</label><select class="f-inp" id="h-c"><option value="press">Press</option><option value="digital">Digital</option><option value="social">Social</option><option value="broadcast">Broadcast</option><option value="general">General</option></select></div></div>
+      <div class="f-row"><label class="f-lbl">Headline</label><input class="f-inp" id="h-t" placeholder="e.g. Exclusive first look at Toy Story 5"></div>
+      <div class="f-row"><label class="f-lbl">Detail / Metrics</label><input class="f-inp" id="h-dt" placeholder="e.g. EW cover story, 2M+ impressions"></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="cm('m-hl')">Cancel</button><button class="btn btn-g" onclick="svHl()">Add Highlight</button></div>
+  </div>
+</div>
+<div class="modal-wrap" id="m-sched">
+  <div class="modal" style="width:520px">
+    <div class="modal-hdr"><span class="modal-t">Add Schedule Block</span><button class="modal-x" onclick="cm('m-sched')">✕</button></div>
+    <div class="modal-body">
+      <div class="f-row-2"><div><label class="f-lbl">Start</label><input class="f-inp" id="sb-s" type="time" value="09:00"></div><div><label class="f-lbl">End</label><input class="f-inp" id="sb-e" type="time" value="09:15"></div></div>
+      <div class="f-row"><label class="f-lbl">Talent</label><select class="f-inp" id="sb-t"><option value="">— select —</option></select></div>
+      <div class="f-row"><label class="f-lbl">Journalist / Outlet</label><select class="f-inp" id="sb-j"><option value="">— select —</option></select></div>
+      <div class="f-row-2"><div><label class="f-lbl">Room</label><input class="f-inp" id="sb-r" placeholder="Room / Suite"></div><div><label class="f-lbl">Notes</label><input class="f-inp" id="sb-n" placeholder="e.g. No spoilers"></div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="cm('m-sched')">Cancel</button><button class="btn btn-g" onclick="svSched()">Add Block</button></div>
+  </div>
+</div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────
+const SLATE=[
+  {id:'mandalorian',title:'The Mandalorian & Grogu',date:'2026-05-22',seg:'Studios / Lucasfilm',tier:1,status:'complete',color:'#F59E0B'},
+  {id:'ts5',title:'Toy Story 5',date:'2026-06-19',seg:'Studios / Pixar',tier:1,status:'active',color:'#3B82F6'},
+  {id:'moana',title:'Moana (Live-Action)',date:'2026-07-10',seg:'Studios',tier:1,status:'active',color:'#10B981'},
+  {id:'endgame-re',title:'Avengers: Endgame Re-Release',date:'2026-09-25',seg:'Studios / Marvel',tier:2,status:'planning',color:'#EF4444'},
+  {id:'hexed',title:"Disney's Hexed",date:'2026-10-27',seg:'Studios',tier:2,status:'planning',color:'#8B5CF6'},
+  {id:'doomsday',title:'Avengers: Doomsday',date:'2026-12-18',seg:'Studios / Marvel',tier:1,status:'planning',color:'#DC2626'},
+  {id:'tron3',title:'Tron 3',date:'2027-01-07',seg:'Studios',tier:1,status:'planning',color:'#06B6D4'},
+  {id:'ice-age',title:'Ice Age: Boiling Point',date:'2027-02-05',seg:'Studios / 20th',tier:2,status:'planning',color:'#6366F1'},
+  {id:'gatto',title:'Gatto (Pixar)',date:'2027-03-06',seg:'Studios / Pixar',tier:2,status:'planning',color:'#EC4899'},
+  {id:'starfighter',title:'Star Wars: Starfighter',date:'2027-05-01',seg:'Studios / Lucasfilm',tier:1,status:'planning',color:'#F59E0B'},
+  {id:'frozen3',title:'Frozen 3',date:'2027-11-19',seg:'Studios',tier:1,status:'planning',color:'#67E8F9'},
+  {id:'secret-wars',title:'Avengers: Secret Wars',date:'2027-12-17',seg:'Studios / Marvel',tier:1,status:'planning',color:'#DC2626'},
+];
+const K='pgs3';
+let dashView='dash',ct=null,cTab='jk',cSci=null;
+function ls(){try{return JSON.parse(localStorage.getItem(K))||{};}catch{return {};}}
+function ss(s){localStorage.setItem(K,JSON.stringify(s));}
+function gts(id){const s=ls();if(!s[id])s[id]={talent:[],press:[],sched:[],screenings:[],hl:[],jkDate:'',jkVenue:'',jkCity:''};return s[id];}
+function sts(id,ts){const s=ls();s[id]=ts;ss(s);}
+
+// ── CHAT ENGINE ───────────────────────────────────────────────────────
+let chatState='idle'; // idle | flowing | pick_title
+let chatFlow=null,chatStep=0,chatCtx={},pendingFlow=null;
+
+const FLOWS={
+  screening:[
+    {ask:'What type of screening?',key:'scType',chips:['Press Screening','Trade Screening','Industry / Guild','Premiere','Fan Screening','Awards Consideration']},
+    {ask:'Date? (e.g. 2026-06-25 or "June 25")',key:'scDate',type:'date'},
+    {ask:'Time? (e.g. 19:00 or 7pm)',key:'scTime',type:'time'},
+    {ask:'Venue name?',key:'scVenue'},
+    {ask:'City?',key:'scCity'},
+    {ask:'Capacity? (or type skip)',key:'scCap',optional:true},
+    {ask:'Any embargo notes? (or type skip)',key:'scNotes',optional:true},
+  ],
+  junket:[
+    {ask:'Junket date? (e.g. 2026-06-05)',key:'jkDate',type:'date'},
+    {ask:'Venue?',key:'jkVenue'},
+    {ask:'City?',key:'jkCity'},
+  ],
+  talent:[
+    {ask:"Talent name?",key:'talentName'},
+    {ask:'Role or character?',key:'talentRole'},
+    {ask:'Availability notes? (or type skip)',key:'talentAvail',optional:true},
+  ],
+  press:[
+    {ask:"Reporter's name?",key:'pressName'},
+    {ask:'Outlet?',key:'pressOutlet'},
+    {ask:'Interview type?',key:'pressType',chips:['Print / Online','Broadcast / TV','Podcast / Audio','Photography','Wire / Trade']},
+    {ask:'Room assignment? (or type skip)',key:'pressRoom',optional:true},
+    {ask:'Minutes per interview? (default 15, or skip)',key:'pressMin',optional:true},
+  ],
+  highlight:[
+    {ask:'Date of the highlight? (e.g. 2026-06-17)',key:'hlDate',type:'date'},
+    {ask:'Category?',key:'hlCat',chips:['Press','Digital','Social','Broadcast','General']},
+    {ask:'Headline?',key:'hlTitle'},
+    {ask:'Detail or metrics? (or type skip)',key:'hlDetail',optional:true},
+  ],
+  report:[
+    {ask:'Which report?',key:'rptType',chips:['Full Campaign Report','Junket Schedule','All Attendee Lists','Highlight Document']},
+  ],
+};
+
+function parseDate(str){
+  str=str.trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(str))return str;
+  const m=str.match(/^(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?$/);
+  if(m)return`${m[3]||'2026'}-${String(m[1]).padStart(2,'0')}-${String(m[2]).padStart(2,'0')}`;
+  const mo={jan:'01',feb:'02',mar:'03',apr:'04',may:'05',jun:'06',jul:'07',aug:'08',sep:'09',oct:'10',nov:'11',dec:'12'};
+  const n=str.match(/^(\w{3,})[\s,]+(\d{1,2})(?:[\s,]+(\d{4}))?$/i);
+  if(n){const mv=mo[n[1].toLowerCase().slice(0,3)];if(mv)return`${n[3]||'2026'}-${mv}-${String(n[2]).padStart(2,'0')}`;}
+  return null;
+}
+function parseTime(str){
+  str=str.trim();
+  const m=str.match(/^(\d{1,2}):?(\d{2})?\s*([ap]m)?$/i);
+  if(!m)return null;
+  let h=parseInt(m[1]),mn=m[2]||'00',ap=(m[3]||'').toLowerCase();
+  if(ap==='pm'&&h<12)h+=12;
+  if(ap==='am'&&h===12)h=0;
+  return String(h).padStart(2,'0')+':'+mn;
+}
+
+function addMsg(role,html,chips=[]){
+  const wrap=document.getElementById('chat-msgs');
+  const el=document.createElement('div');
+  el.className='msg msg-'+role;
+  const ch=chips.length?`<div class="chips">${chips.map(c=>`<button class="chip" onclick="sendChip(${JSON.stringify(c)})">${c}</button>`).join('')}</div>`:'';
+  el.innerHTML=`<div class="bubble">${html}</div>${ch}`;
+  wrap.appendChild(el);
+  wrap.scrollTop=wrap.scrollHeight;
+}
+
+function addTitleChips(){
+  const wrap=document.getElementById('chat-msgs');
+  const el=document.createElement('div');
+  el.className='msg msg-bot';
+  el.innerHTML=`<div class="chips">${SLATE.map(t=>`<button class="chip chip-t" onclick="pickTitle('${t.id}')" style="border-left:3px solid ${t.color}">${t.title}</button>`).join('')}</div>`;
+  wrap.appendChild(el);
+  wrap.scrollTop=wrap.scrollHeight;
+}
+
+function showIdleChips(){document.getElementById('idle-chips').style.display='flex';}
+function hideIdleChips(){document.getElementById('idle-chips').style.display='none';}
+
+function updateTitlePill(){
+  const t=SLATE.find(x=>x.id===ct);
+  document.getElementById('tp-dot').style.background=t?t.color:'var(--muted)';
+  document.getElementById('tp-name').textContent=t?t.title+' ▾':'Select title ▾';
+}
+
+function pickTitle(id){
+  const t=SLATE.find(x=>x.id===id);
+  ct=id;
+  updateTitlePill();
+  if(chatState==='pick_title'){
+    chatState='idle';
+    addMsg('bot',`Switched to <strong>${t.title}</strong>.`);
+    if(pendingFlow){const pf=pendingFlow;pendingFlow=null;_startFlow(pf);}
+    else{addMsg('bot','What do you need?');showIdleChips();}
+  } else if(chatFlow==='switchtitle'){
+    chatFlow=null;chatState='idle';
+    addMsg('bot',`Working on <strong>${t.title}</strong>. What do you need?`);
+    showIdleChips();
+  }
+}
+
+function startFlow(flow){
+  hideIdleChips();
+  if(!ct&&flow!=='switchtitle'){
+    pendingFlow=flow;
+    addMsg('bot','Which title are we working on?');
+    addTitleChips();
+    chatState='pick_title';
+    return;
+  }
+  _startFlow(flow);
+}
+
+function _startFlow(flow){
+  if(flow==='switchtitle'){
+    chatFlow='switchtitle';chatState='flowing';
+    addMsg('bot','Which title?');
+    addTitleChips();
+    return;
+  }
+  chatFlow=flow;chatStep=0;chatState='flowing';chatCtx={};
+  promptStep();
+}
+
+function promptStep(){
+  const flow=FLOWS[chatFlow];if(!flow)return;
+  const step=flow[chatStep];if(!step)return;
+  const opt=step.optional?` <span style="color:var(--subtle);font-size:10px">(optional — type "skip")</span>`:'';
+  addMsg('bot',step.ask+opt,step.chips||[]);
+}
+
+function advanceFlow(input){
+  const flow=FLOWS[chatFlow];if(!flow)return;
+  const step=flow[chatStep];if(!step)return;
+  let val=input.trim();
+  if(step.optional&&/^skip$/i.test(val))val='';
+  if(step.type==='date'&&val){
+    const p=parseDate(val);
+    if(!p){addMsg('bot','Couldn\'t read that date. Try <code>2026-06-25</code> or "June 25".');return;}
+    val=p;
+  }
+  if(step.type==='time'&&val){
+    const p=parseTime(val);
+    if(!p){addMsg('bot','Couldn\'t parse that time. Try <code>19:00</code> or <code>7pm</code>.');return;}
+    val=p;
+  }
+  chatCtx[step.key]=val;
+  chatStep++;
+  if(chatStep<flow.length)promptStep();
+  else completeFlow();
+}
+
+function completeFlow(){
+  const ts=gts(ct);
+  const t=SLATE.find(x=>x.id===ct);
+  let msg='';
+  switch(chatFlow){
+    case 'screening':
+      ts.screenings.push({t:chatCtx.scType,d:chatCtx.scDate,ti:chatCtx.scTime,v:chatCtx.scVenue,c:chatCtx.scCity,cap:chatCtx.scCap,n:chatCtx.scNotes,st:'pend',att:[]});
+      sts(ct,ts);
+      msg=`✅ <strong>${chatCtx.scType}</strong> added — ${chatCtx.scVenue}, ${chatCtx.scCity} · ${chatCtx.scDate}.`;
+      break;
+    case 'junket':
+      ts.jkDate=chatCtx.jkDate;ts.jkVenue=chatCtx.jkVenue;ts.jkCity=chatCtx.jkCity;
+      sts(ct,ts);
+      msg=`✅ Junket set — <strong>${chatCtx.jkVenue}</strong>, ${chatCtx.jkCity} · ${chatCtx.jkDate}.`;
+      break;
+    case 'talent':
+      ts.talent.push({n:chatCtx.talentName,r:chatCtx.talentRole,a:chatCtx.talentAvail||''});
+      sts(ct,ts);
+      msg=`✅ <strong>${chatCtx.talentName}</strong> added to the ${t.title} talent roster.`;
+      break;
+    case 'press':
+      ts.press.push({n:chatCtx.pressName,o:chatCtx.pressOutlet,t:chatCtx.pressType||'Print / Online',rm:chatCtx.pressRoom||'TBD',m:chatCtx.pressMin||'15'});
+      sts(ct,ts);
+      msg=`✅ <strong>${chatCtx.pressName}</strong> (${chatCtx.pressOutlet}) added to the press list.`;
+      break;
+    case 'highlight':
+      ts.hl.push({d:chatCtx.hlDate,c:(chatCtx.hlCat||'general').toLowerCase(),t:chatCtx.hlTitle,dt:chatCtx.hlDetail||''});
+      sts(ct,ts);
+      msg=`✅ Highlight logged — <em>${chatCtx.hlTitle}</em>`;
+      break;
+    case 'report':{
+      const rt=chatCtx.rptType;
+      if(!ct){msg='⚠️ Select a title first.';break;}
+      if(rt==='Full Campaign Report')expTitle(ct);
+      else if(rt==='Junket Schedule')expJk(ct);
+      else if(rt==='All Attendee Lists')expAllAtt(ct);
+      else if(rt==='Highlight Document')expHlDoc(ct);
+      msg=`📥 Downloading <strong>${rt}</strong>…`;
+      break;}
+  }
+  chatState='idle';chatFlow=null;chatStep=0;chatCtx={};
+  addMsg('bot',msg+'<br><span style="font-size:11px;color:var(--muted)">Open Dashboard to view and manage, or keep going here.</span>');
+  showIdleChips();
+}
+
+function detectIntent(msg){
+  const m=msg.toLowerCase();
+  if(/screen/.test(m))return 'screening';
+  if(/junket|press day/.test(m))return 'junket';
+  if(/\btalent\b|actor|actress|director|filmmaker/.test(m))return 'talent';
+  if(/press|journalist|reporter|contact/.test(m))return 'press';
+  if(/highlight|coverage|log|record/.test(m))return 'highlight';
+  if(/report|export|generate|download/.test(m))return 'report';
+  if(/switch|change.*title|select.*title/.test(m))return 'switchtitle';
+  if(/dashboard|manage/.test(m)){showDash();return null;}
+  return null;
+}
+
+function sendMsg(){
+  const inp=document.getElementById('chat-in');
+  const msg=inp.value.trim();
+  if(!msg)return;
+  inp.value='';
+  hideIdleChips();
+  addMsg('user',msg.replace(/</g,'&lt;'));
+  if(chatState==='flowing'){
+    if(chatFlow==='switchtitle'){
+      const match=SLATE.find(t=>t.title.toLowerCase().includes(msg.toLowerCase()));
+      if(match)pickTitle(match.id);
+      else{addMsg('bot','Which title?');addTitleChips();}
+      return;
+    }
+    advanceFlow(msg);return;
+  }
+  if(chatState==='pick_title'){
+    const match=SLATE.find(t=>t.title.toLowerCase().includes(msg.toLowerCase()));
+    if(match)pickTitle(match.id);
+    else{addMsg('bot',"I don't recognize that title. Please select one:");addTitleChips();}
+    return;
+  }
+  const intent=detectIntent(msg);
+  if(intent)startFlow(intent);
+  else{
+    addMsg('bot',"I can help you schedule screenings, plan junkets, add talent or press, log highlights, or generate reports. What would you like to do?",
+      ['Schedule a screening','Plan a junket','Add press contact','Generate a report']);
+    showIdleChips();
+  }
+}
+
+function sendChip(val){
+  document.getElementById('chat-in').value=val;
+  sendMsg();
+}
+
+// ── VIEW NAVIGATION ───────────────────────────────────────────────────
+function showDash(){
+  document.getElementById('cv').style.display='none';
+  document.getElementById('dv').classList.add('open');
+  rSidebar();
+  if(ct)gt(ct);else rdash();
+}
+function showChat(){
+  document.getElementById('dv').classList.remove('open');
+  document.getElementById('cv').style.display='flex';
+  updateTitlePill();
+}
+
+// ── DASHBOARD ENGINE ──────────────────────────────────────────────────
+function gv(v){dashView=v;['dash','cal','rep'].forEach(x=>document.getElementById('nb-'+x)?.classList.toggle('on',x===v));document.querySelectorAll('.title-row').forEach(el=>el.classList.remove('on'));if(v==='dash')rdash();else if(v==='cal')rcal();else if(v==='rep')rrep();}
+function gt(id){ct=id;dashView='title';cTab='jk';['dash','cal','rep'].forEach(x=>document.getElementById('nb-'+x)?.classList.remove('on'));document.querySelectorAll('.title-row').forEach(el=>el.classList.toggle('on',el.dataset.id===id));rtitle(id,cTab);}
+
+function rSidebar(){
+  document.getElementById('titles-list').innerHTML=SLATE.map(t=>{
+    const d=new Date(t.date+'T12:00:00');
+    const ds=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
+    const sc=t.status==='complete'?'s-done':t.status==='active'?'s-act':'s-plan';
+    const sl=t.status==='complete'?'Done':t.status==='active'?'Active':'Plan';
+    return`<div class="title-row" data-id="${t.id}" onclick="gt('${t.id}')"><span class="t-dot" style="background:${t.color}"></span><div style="flex:1;min-width:0"><div class="t-name">${t.title}</div><div class="t-date">${ds}</div></div><span class="t-stage ${sc}">${sl}</span></div>`;
+  }).join('');
+}
+
+function rdash(){
+  document.getElementById('tb-h').textContent='Publicity Dashboard';
+  document.getElementById('tb-s').textContent='Walt Disney Studios · Full Slate Overview';
+  document.getElementById('tb-act').innerHTML='<button class="btn" onclick="gv(\'rep\')">📋 Reports</button>';
+  const all=ls();let tj=0,ts2=0,ta=0,th=0,tsb=0;
+  SLATE.forEach(t=>{const s=all[t.id]||{};tj+=(s.press||[]).length;ts2+=(s.screenings||[]).length;th+=(s.hl||[]).length;tsb+=(s.sched||[]).length;(s.screenings||[]).forEach(sc=>ta+=(sc.att||[]).length);});
+  const act=SLATE.filter(t=>t.status==='active').length;
+  document.getElementById('content').innerHTML=`
+  <div class="stats-row">
+    <div class="s-card"><div class="s-val" style="color:var(--gold)">${SLATE.length}</div><div class="s-lbl">Titles</div><div class="s-sub">${act} active · ${SLATE.length-act-1} planning</div></div>
+    <div class="s-card"><div class="s-val" style="color:var(--blue)">${ts2}</div><div class="s-lbl">Screenings</div><div class="s-sub">${ta} attendees logged</div></div>
+    <div class="s-card"><div class="s-val" style="color:var(--purple)">${tj}</div><div class="s-lbl">Press Contacts</div><div class="s-sub">Across all junkets</div></div>
+    <div class="s-card"><div class="s-val" style="color:var(--green)">${tsb}</div><div class="s-lbl">Schedule Blocks</div><div class="s-sub">Junket time slots</div></div>
+    <div class="s-card"><div class="s-val" style="color:var(--orange)">${th}</div><div class="s-lbl">Highlights</div><div class="s-sub">Coverage items logged</div></div>
+  </div>
+  <div class="ag-grid">
+    <div class="ag-card"><div class="ag-t">📊 Press Activity by Title</div>${SLATE.map(t=>{const s=all[t.id]||{};const n=(s.press||[]).length+(s.talent||[]).length;return`<div class="br-row"><span class="br-lbl" title="${t.title}">${t.title.split(':')[0].slice(0,18)}</span><div class="br-track"><div class="br-fill" style="width:${Math.min(100,n/20*100)}%;background:${t.color}"></div></div><span class="br-v">${n}</span></div>`;}).join('')}</div>
+    <div class="ag-card"><div class="ag-t">🎬 Screening Pipeline</div>${SLATE.map(t=>{const s=all[t.id]||{};const sc=s.screenings||[];const tot=sc.length;return`<div class="br-row"><span class="br-lbl">${t.title.split(':')[0].slice(0,18)}</span><div style="flex:1;font-size:9px;color:var(--muted)">${tot===0?'—':`${tot} screenings · ${sc.reduce((a,x)=>a+(x.att||[]).length,0)} attendees`}</div></div>`;}).join('')}</div>
+  </div>
+  <div class="sec-hdr"><div><div class="sec-h">Title Pipeline</div><div class="sec-sub">Click any title to manage</div></div></div>
+  <table class="pipe-tbl"><thead><tr><th>Title</th><th>Release</th><th>Tier</th><th>Status</th><th>Junket</th><th>Screenings</th><th>Highlights</th><th></th></tr></thead>
+  <tbody>${SLATE.map(t=>{const s=all[t.id]||{};const d=new Date(t.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});const sc=t.status==='complete'?'s-done':t.status==='active'?'s-act':'s-plan';const sl=t.status==='complete'?'Complete':t.status==='active'?'Active':'Planning';return`<tr style="cursor:pointer" onclick="gt('${t.id}')"><td><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${t.color};margin-right:7px;vertical-align:middle"></span><strong>${t.title}</strong></td><td style="color:var(--muted)">${d}</td><td><span style="font-size:8px;font-weight:800;padding:1px 4px;border-radius:2px;background:${t.tier===1?'rgba(200,168,75,.15)':'rgba(96,165,250,.12)'};color:${t.tier===1?'var(--gold)':'var(--blue)'}">T${t.tier}</span></td><td><span class="t-stage ${sc}">${sl}</span></td><td style="color:var(--muted);font-size:11px">${(s.press||[]).length} contacts</td><td style="color:var(--muted);font-size:11px">${(s.screenings||[]).length} screenings</td><td style="color:var(--muted);font-size:11px">${(s.hl||[]).length} items</td><td><button class="btn btn-xs" onclick="event.stopPropagation();gt('${t.id}')">Open →</button></td></tr>`;}).join('')}</tbody></table>`;
+}
+
+function rtitle(id,tab){
+  const t=SLATE.find(x=>x.id===id);if(!t)return;
+  const ts=gts(id);
+  const d=new Date(t.date+'T12:00:00');
+  const ds=d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  const days=Math.ceil((d-new Date())/86400000);
+  document.getElementById('tb-h').textContent=t.title;
+  document.getElementById('tb-s').textContent=`${t.seg} · ${ds}${days>0?' · '+days+' days out':' · Released'}`;
+  document.getElementById('tb-act').innerHTML=`<button class="btn" onclick="expTitle('${id}')">📋 Export</button><button class="btn" onclick="gv('dash')">← Titles</button>`;
+  const totAtt=ts.screenings.reduce((a,s)=>a+(s.att||[]).length,0);
+  document.getElementById('content').innerHTML=`
+  <div class="t-hdr"><div style="flex:1"><div class="t-hdr-name">${t.title}</div><div style="margin-top:3px"><span class="t-stage ${t.status==='complete'?'s-done':t.status==='active'?'s-act':'s-plan'}" style="font-size:9px">${t.status}</span><span style="font-size:10px;color:var(--muted);margin-left:8px">Tier ${t.tier} · ${t.seg}</span></div><div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:10px;color:var(--muted)"><span>📅 Release: <b style="color:var(--text)">${ds}</b></span>${ts.jkDate?`<span>🎤 Junket: <b style="color:var(--text)">${ts.jkDate}</b></span>`:''}${ts.jkVenue?`<span>📍 <b style="color:var(--text)">${ts.jkVenue}</b></span>`:''}</div></div>
+  <div class="t-hdr-stats"><div class="hs"><div class="hs-val">${ts.talent.length}</div><div class="hs-lbl">Talent</div></div><div class="hs"><div class="hs-val">${ts.press.length}</div><div class="hs-lbl">Press</div></div><div class="hs"><div class="hs-val">${ts.screenings.length}</div><div class="hs-lbl">Screenings</div></div><div class="hs"><div class="hs-val">${totAtt}</div><div class="hs-lbl">Attendees</div></div></div></div>
+  <div class="tabs"><button class="tab ${tab==='jk'?'on':''}" onclick="stab('jk')">🎤 Junket</button><button class="tab ${tab==='sc'?'on':''}" onclick="stab('sc')">🎬 Screenings</button><button class="tab ${tab==='hl'?'on':''}" onclick="stab('hl')">✨ Highlights</button></div>
+  <div id="tab-body"></div>`;
+  rtab(id,tab);
+}
+
+function stab(tab){cTab=tab;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.textContent.includes(tab==='jk'?'Junket':tab==='sc'?'Screening':'Highlight')));rtab(ct,tab);}
+function rtab(id,tab){const el=document.getElementById('tab-body');if(!el)return;if(tab==='jk')el.innerHTML=rjk(id);else if(tab==='sc')el.innerHTML=rsc(id);else el.innerHTML=rhl(id);}
+
+function rjk(id){
+  const ts=gts(id);
+  const tc=ts.talent.length?ts.talent.map((t,i)=>`<div class="r-card"><div class="r-av">${t.n.split(' ').map(w=>w[0]).join('').slice(0,2)}</div><div><div class="r-name">${t.n}</div><div class="r-role">${t.r}</div>${t.a?`<div style="font-size:8px;color:var(--subtle);margin-top:1px">${t.a}</div>`:''}</div><button class="r-del" onclick="delT('${id}',${i})">✕</button></div>`).join(''):'<div style="color:var(--subtle);font-size:11px">None added.</div>';
+  const pc=ts.press.length?ts.press.map((p,i)=>`<div class="r-card"><div class="r-av" style="background:var(--blue-l);border-color:var(--blue);color:var(--blue)">${p.n.split(' ').map(w=>w[0]).join('').slice(0,2)}</div><div style="flex:1;min-width:0"><div class="r-name">${p.n}</div><div class="r-role">${p.o} · ${p.t}</div><div style="font-size:8px;color:var(--subtle);margin-top:1px">${p.rm} · ${p.m}min</div></div><button class="r-del" onclick="delP('${id}',${i})">✕</button></div>`).join(''):'<div style="color:var(--subtle);font-size:11px">None added.</div>';
+  const srows=ts.sched.length?ts.sched.map((b,i)=>`<tr><td><span class="tc">${b.s}–${b.e}</span></td><td>${b.t?`<span class="tt">${b.t}</span>`:'—'}</td><td>${b.j?`<span class="jt">${b.j}</span>`:'—'}</td><td>${b.r?`<span class="rt">${b.r}</span>`:'—'}</td><td style="color:var(--muted);font-size:9px">${b.n||''}</td><td><button class="btn btn-xs" onclick="delSb('${id}',${i})" style="color:var(--red)">✕</button></td></tr>`).join(''):`<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--subtle)">No schedule blocks yet. Add talent and press first.</td></tr>`;
+  return`<div class="jk-sec"><div class="jk-sec-hdr"><span class="jk-sec-t">🗓 Junket Info</span></div><div class="jk-body"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"><div><label class="f-lbl">Date</label><input class="f-inp" id="jd" value="${ts.jkDate||''}" type="date" onchange="svJkMeta('${id}')"></div><div><label class="f-lbl">Venue</label><input class="f-inp" id="jv" value="${ts.jkVenue||''}" onchange="svJkMeta('${id}')" placeholder="e.g. The Beverly Hilton"></div><div><label class="f-lbl">City</label><input class="f-inp" id="jc" value="${ts.jkCity||''}" onchange="svJkMeta('${id}')" placeholder="e.g. Beverly Hills, CA"></div></div></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px"><div class="jk-sec"><div class="jk-sec-hdr"><span class="jk-sec-t">⭐ Talent (${ts.talent.length})</span><button class="btn btn-xs btn-g" onclick="om('m-talent')">+ Add</button></div><div class="jk-body"><div class="roster-grid">${tc}</div></div></div><div class="jk-sec"><div class="jk-sec-hdr"><span class="jk-sec-t">📰 Press (${ts.press.length})</span><button class="btn btn-xs btn-g" onclick="om('m-press')">+ Add</button></div><div class="jk-body"><div class="roster-grid">${pc}</div></div></div></div>
+  <div class="jk-sec"><div class="jk-sec-hdr"><span class="jk-sec-t">⏰ Schedule (${ts.sched.length} blocks)</span><div style="display:flex;gap:7px"><button class="btn btn-xs" onclick="autoSched('${id}')">⚡ Auto-generate</button><button class="btn btn-xs btn-g" onclick="omSched('${id}')">+ Block</button></div></div><div style="padding:0"><table class="sched-tbl"><thead><tr><th>Time</th><th>Talent</th><th>Journalist</th><th>Room</th><th>Notes</th><th></th></tr></thead><tbody>${srows}</tbody></table></div></div>`;
+}
+
+function rsc(id){
+  const ts=gts(id);
+  const cards=ts.screenings.length?ts.screenings.map((sc,i)=>{
+    const d=sc.d?new Date(sc.d+'T12:00:00'):null;
+    const mo=d?d.toLocaleDateString('en-US',{month:'short'}).toUpperCase():'—';
+    const dy=d?d.getDate():'—';
+    const att=sc.att||[];const conf=att.filter(a=>a.r==='confirmed').length;const inv=att.filter(a=>a.r==='invited').length;
+    const sCls='sb-'+(sc.st||'pend');const sLbl=sc.st==='confirmed'?'Confirmed':sc.st==='cancelled'?'Cancelled':'Pending';
+    return`<div class="sc-card"><div class="sc-date"><div class="sc-mo">${mo}</div><div class="sc-dy">${dy}</div></div><div class="sc-info"><div style="display:flex;align-items:center;gap:9px;margin-bottom:3px"><div class="sc-name">${sc.t} — ${sc.v||'TBD'}</div><span class="s-badge ${sCls}">${sLbl}</span></div><div class="sc-meta">${sc.ti?`<span class="sc-m">🕐 ${sc.ti}</span>`:''}${sc.c?`<span class="sc-m">📍 ${sc.c}</span>`:''}${sc.cap?`<span class="sc-m">💺 ${sc.cap} seats</span>`:''}${sc.n?`<span class="sc-m">📝 ${sc.n}</span>`:''}</div>
+    <div style="margin-top:7px;display:flex;align-items:center;gap:10px"><span style="font-size:11px;font-weight:600">${att.length} attendees</span><span style="font-size:10px;color:var(--green)">${conf} confirmed</span><span style="font-size:10px;color:var(--muted)">${inv} invited</span><div style="margin-left:auto;display:flex;gap:5px"><button class="btn btn-xs" onclick="togScSt('${id}',${i})">${sc.st==='confirmed'?'Unconfirm':'Confirm'}</button><button class="btn btn-xs btn-g" onclick="omAtt('${id}',${i})">+ Attendee</button><button class="btn btn-xs" onclick="expAtt('${id}',${i})">📋 List</button><button class="btn btn-xs" style="color:var(--red)" onclick="delSc('${id}',${i})">✕</button></div></div>
+    ${att.length?`<div style="margin-top:7px;padding-top:7px;border-top:1px solid var(--border)"><div style="display:flex;flex-wrap:wrap;gap:4px">${att.slice(0,10).map(a=>`<span style="font-size:9px;background:var(--surface2);border:1px solid var(--border2);padding:1px 6px;border-radius:3px;color:${a.r==='confirmed'?'var(--green)':a.r==='declined'?'var(--red)':'var(--muted)'}">${a.n}${a.o?' · '+a.o:''}</span>`).join('')}${att.length>10?`<span style="font-size:9px;color:var(--subtle)">+${att.length-10}</span>`:''}</div></div>`:''}
+    </div></div>`;
+  }).join(''):`<div class="empty"><div class="empty-ico">🎬</div><div class="empty-t">No screenings yet</div><div class="empty-s">Add press, trade, and industry screenings.<br>Track attendees and export lists.</div></div>`;
+  return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div><div style="font-size:13px;font-weight:700">Screenings (${ts.screenings.length})</div><div style="font-size:11px;color:var(--muted)">Manage and track all screening events</div></div><button class="btn btn-g" onclick="om('m-screen')">+ Add Screening</button></div>${cards}`;
+}
+
+function rhl(id){
+  const ts=gts(id);const catCls={press:'hl-pr',digital:'hl-di',social:'hl-so',broadcast:'hl-br',general:'hl-ge'};
+  const items=ts.hl.length?[...ts.hl].reverse().map((h,i)=>`<div class="hl-item"><span class="hl-cat ${catCls[h.c]||'hl-ge'}">${h.c||'general'}</span><div style="flex:1"><div class="hl-t">${h.t}</div>${h.dt?`<div class="hl-d">${h.dt}</div>`:''}</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span style="font-size:9px;color:var(--subtle)">${h.d||''}</span><button class="btn btn-xs" style="color:var(--red)" onclick="delHl('${id}',${ts.hl.length-1-i})">✕</button></div></div>`).join(''):`<div class="empty"><div class="empty-ico">✨</div><div class="empty-t">No highlights yet</div><div class="empty-s">Log press hits, social moments, and<br>campaign milestones here.</div></div>`;
+  return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div><div style="font-size:13px;font-weight:700">Campaign Highlights (${ts.hl.length})</div><div style="font-size:11px;color:var(--muted)">Press, digital, social, broadcast coverage</div></div><button class="btn btn-g" onclick="om('m-hl')">+ Add Highlight</button></div>${items}`;
+}
+
+function rcal(){
+  document.getElementById('tb-h').textContent='Publicity Calendar';
+  document.getElementById('tb-s').textContent='All titles — events, junkets, screenings, releases';
+  document.getElementById('tb-act').innerHTML='';
+  const all=ls();const evts=[];
+  SLATE.forEach(t=>{const ts=all[t.id]||{};if(ts.jkDate)evts.push({date:ts.jkDate,lbl:`${t.title} — Junket`,c:t.color,ico:'🎤'});(ts.screenings||[]).forEach(sc=>{if(sc.d)evts.push({date:sc.d,lbl:`${t.title} — ${sc.t}`,c:t.color,ico:'🎬'});});evts.push({date:t.date,lbl:`${t.title} — RELEASE`,c:t.color,ico:'🎉',b:true});});
+  evts.sort((a,b)=>a.date.localeCompare(b.date));
+  const now=new Date().toISOString().slice(0,10);
+  const up=evts.filter(e=>e.date>=now);const ps=evts.filter(e=>e.date<now);
+  document.getElementById('content').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+  <div><div class="sec-hdr"><div class="sec-h">📅 Upcoming (${up.length})</div></div>${up.slice(0,30).map(e=>{const d=new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});return`<div class="cal-ev"><span>${e.ico}</span><div style="flex:1"><div style="font-size:11px;font-weight:${e.b?'700':'500'};color:${e.b?e.c:'var(--text)'}">${e.lbl}</div><div style="font-size:9px;color:var(--muted)">${d}</div></div><span style="width:5px;height:5px;border-radius:50%;background:${e.c};flex-shrink:0"></span></div>`;}).join('')}</div>
+  <div><div class="sec-hdr"><div class="sec-h">✅ Past (${ps.length})</div></div>${ps.slice(-15).reverse().map(e=>{const d=new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});return`<div class="cal-ev" style="opacity:.55"><span>${e.ico}</span><div style="flex:1"><div style="font-size:11px">${e.lbl}</div><div style="font-size:9px;color:var(--muted)">${d}</div></div></div>`;}).join('')}</div></div>`;
+}
+
+function rrep(){
+  document.getElementById('tb-h').textContent='Reports';
+  document.getElementById('tb-s').textContent='Generate and export publicity documents';
+  document.getElementById('tb-act').innerHTML='';
+  document.getElementById('content').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px">${SLATE.map(t=>`<div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);overflow:hidden"><div style="padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:${t.color}"></span><span style="font-size:12px;font-weight:700">${t.title}</span></div><div style="padding:12px 14px;display:flex;flex-direction:column;gap:6px"><button class="btn" style="justify-content:flex-start;font-size:11px" onclick="expTitle('${t.id}')">📋 Full Campaign Report</button><button class="btn" style="justify-content:flex-start;font-size:11px" onclick="expJk('${t.id}')">🎤 Junket Schedule</button><button class="btn" style="justify-content:flex-start;font-size:11px" onclick="expAllAtt('${t.id}')">🎬 All Attendee Lists</button><button class="btn" style="justify-content:flex-start;font-size:11px" onclick="expHlDoc('${t.id}')">✨ Highlight Document</button></div></div>`).join('')}</div>`;
+}
+
+// ── MODAL / SAVE / DELETE ─────────────────────────────────────────────
+function om(id){document.getElementById(id).classList.add('open');}
+function cm(id){document.getElementById(id).classList.remove('open');}
+function omAtt(tid,sci){cSci=sci;document.getElementById('att-t').textContent='Add Attendee';om('m-att');}
+function omSched(id){const ts=gts(id);document.getElementById('sb-t').innerHTML='<option value="">— select —</option>'+ts.talent.map(t=>`<option>${t.n}</option>`).join('');document.getElementById('sb-j').innerHTML='<option value="">— select —</option>'+ts.press.map(p=>`<option>${p.n} (${p.o})</option>`).join('');om('m-sched');}
+function svTalent(){const n=document.getElementById('t-n').value.trim(),r=document.getElementById('t-r').value.trim(),a=document.getElementById('t-a').value.trim();if(!n)return;const ts=gts(ct);ts.talent.push({n,r,a});sts(ct,ts);cm('m-talent');['t-n','t-r','t-a'].forEach(id=>document.getElementById(id).value='');rtitle(ct,cTab);}
+function svPress(){const n=document.getElementById('p-n').value.trim(),o=document.getElementById('p-o').value.trim(),t=document.getElementById('p-t').value,rm=document.getElementById('p-rm').value.trim(),m=document.getElementById('p-m').value;if(!n)return;const ts=gts(ct);ts.press.push({n,o,t,rm,m});sts(ct,ts);cm('m-press');['p-n','p-o','p-rm'].forEach(id=>document.getElementById(id).value='');rtitle(ct,cTab);}
+function svScreen(){const t=document.getElementById('sc-t').value,d=document.getElementById('sc-d').value,ti=document.getElementById('sc-ti').value,v=document.getElementById('sc-v').value.trim(),c=document.getElementById('sc-c').value.trim(),cap=document.getElementById('sc-cap').value,n=document.getElementById('sc-n').value.trim();if(!v&&!d)return;const ts=gts(ct);ts.screenings.push({t,d,ti,v,c,cap,n,st:'pend',att:[]});sts(ct,ts);cm('m-screen');['sc-d','sc-v','sc-c','sc-cap','sc-n'].forEach(id=>document.getElementById(id).value='');rtitle(ct,cTab);}
+function svAtt(){const n=document.getElementById('a-n').value.trim(),o=document.getElementById('a-o').value.trim(),r=document.getElementById('a-r').value,no=document.getElementById('a-no').value.trim();if(!n)return;const ts=gts(ct);if(!ts.screenings[cSci])return;ts.screenings[cSci].att=ts.screenings[cSci].att||[];ts.screenings[cSci].att.push({n,o,r,no});sts(ct,ts);cm('m-att');['a-n','a-o','a-no'].forEach(id=>document.getElementById(id).value='');rtitle(ct,cTab);}
+function svHl(){const d=document.getElementById('h-d').value,c=document.getElementById('h-c').value,t=document.getElementById('h-t').value.trim(),dt=document.getElementById('h-dt').value.trim();if(!t)return;const ts=gts(ct);ts.hl.push({d,c,t,dt});sts(ct,ts);cm('m-hl');['h-d','h-t','h-dt'].forEach(id=>document.getElementById(id).value='');rtitle(ct,cTab);}
+function svSched(){const s=document.getElementById('sb-s').value,e=document.getElementById('sb-e').value,t=document.getElementById('sb-t').value,j=document.getElementById('sb-j').value,r=document.getElementById('sb-r').value.trim(),n=document.getElementById('sb-n').value.trim();if(!s)return;const ts=gts(ct);ts.sched.push({s,e,t,j,r,n});ts.sched.sort((a,b)=>a.s.localeCompare(b.s));sts(ct,ts);cm('m-sched');rtitle(ct,cTab);}
+function svJkMeta(id){const ts=gts(id);ts.jkDate=document.getElementById('jd')?.value||'';ts.jkVenue=document.getElementById('jv')?.value||'';ts.jkCity=document.getElementById('jc')?.value||'';sts(id,ts);}
+function delT(id,i){const ts=gts(id);ts.talent.splice(i,1);sts(id,ts);rtitle(id,cTab);}
+function delP(id,i){const ts=gts(id);ts.press.splice(i,1);sts(id,ts);rtitle(id,cTab);}
+function delSc(id,i){const ts=gts(id);ts.screenings.splice(i,1);sts(id,ts);rtitle(id,cTab);}
+function delHl(id,i){const ts=gts(id);ts.hl.splice(i,1);sts(id,ts);rtitle(id,cTab);}
+function delSb(id,i){const ts=gts(id);ts.sched.splice(i,1);sts(id,ts);rtitle(id,cTab);}
+function togScSt(id,i){const ts=gts(id);ts.screenings[i].st=ts.screenings[i].st==='confirmed'?'pend':'confirmed';sts(id,ts);rtitle(id,cTab);}
+function autoSched(id){const ts=gts(id);if(!ts.talent.length||!ts.press.length){alert('Add talent and press contacts first.');return;}const blocks=[];let h=9,m=0;ts.press.forEach(p=>{const dur=parseInt(p.m)||15;ts.talent.forEach(t=>{const ss=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');m+=dur+5;if(m>=60){h+=Math.floor(m/60);m=m%60;}const es=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');blocks.push({s:ss,e:es,t:t.n,j:p.n+' ('+p.o+')',r:p.rm||'TBD',n:''});});m+=10;if(m>=60){h+=Math.floor(m/60);m=m%60;}});ts.sched=blocks;sts(id,ts);rtitle(id,cTab);}
+
+// ── EXPORTS ───────────────────────────────────────────────────────────
+function expTitle(id){const t=SLATE.find(x=>x.id===id),ts=gts(id);const d=new Date(t.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});let txt=`PUBLICITY CAMPAIGN REPORT\n${t.title.toUpperCase()}\nRelease: ${d} · ${t.seg} · Tier ${t.tier}\nGenerated: ${new Date().toLocaleDateString()}\n\n${'='.repeat(56)}\nJUNKET\n${'='.repeat(56)}\n`;if(ts.jkDate)txt+=`Date: ${ts.jkDate}  Venue: ${ts.jkVenue||'TBD'}  City: ${ts.jkCity||''}\n`;txt+=`\nTALENT (${ts.talent.length})\n${ts.talent.map(x=>`• ${x.n} — ${x.r}`).join('\n')||'None'}\n`;txt+=`\nPRESS (${ts.press.length})\n${ts.press.map(x=>`• ${x.n}, ${x.o} · ${x.t} · ${x.rm} · ${x.m}min`).join('\n')||'None'}\n`;if(ts.sched.length)txt+=`\nSCHEDULE\n${ts.sched.map(b=>`${b.s}–${b.e}  ${b.t||'—'}  →  ${b.j||'—'}  [${b.r||'—'}]`).join('\n')}\n`;txt+=`\n${'='.repeat(56)}\nSCREENINGS (${ts.screenings.length})\n${'='.repeat(56)}\n`;ts.screenings.forEach(sc=>{txt+=`\n${sc.t} · ${sc.d||'TBD'} ${sc.ti||''}\n${sc.v||''}, ${sc.c||''} · Cap: ${sc.cap||'—'} · Status: ${sc.st} · Attendees: ${(sc.att||[]).length}\n${(sc.att||[]).map(a=>`  - ${a.n} (${a.o||'—'}) [${a.r}]`).join('\n')||''}\n${sc.n?'Notes: '+sc.n+'\n':''}`});txt+=`\n${'='.repeat(56)}\nCAMPAIGN HIGHLIGHTS (${ts.hl.length})\n${'='.repeat(56)}\n`;ts.hl.forEach(h=>{txt+=`[${(h.c||'').toUpperCase()}] ${h.d||'—'} · ${h.t}\n${h.dt||''}\n\n`;});const bl=new Blob([txt],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=`PGS_${t.title.replace(/[^a-z0-9]/gi,'_')}_${new Date().toISOString().slice(0,10)}.txt`;a.click();}
+function expJk(id){const t=SLATE.find(x=>x.id===id),ts=gts(id);if(!ts.sched.length){alert('No schedule blocks yet.');return;}const h='Start,End,Talent,Journalist,Room,Notes';const rows=ts.sched.map(b=>[b.s,b.e,b.t,b.j,b.r,b.n].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(','));const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent([h,...rows].join('\n'));a.download=`Junket_${t.title.replace(/[^a-z0-9]/gi,'_')}.csv`;a.click();}
+function expAtt(tid,sci){const t=SLATE.find(x=>x.id===tid),ts=gts(tid),sc=ts.screenings[sci];if(!sc||(sc.att||[]).length===0){alert('No attendees.');return;}const h='Name,Outlet,RSVP,Notes';const rows=(sc.att||[]).map(a=>[a.n,a.o,a.r,a.no].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(','));const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent([h,...rows].join('\n'));a.download=`Attendees_${t.title.replace(/[^a-z0-9]/gi,'_')}_${sc.d||'TBD'}.csv`;a.click();}
+function expAllAtt(id){const t=SLATE.find(x=>x.id===id),ts=gts(id);const all=[];ts.screenings.forEach(sc=>(sc.att||[]).forEach(a=>all.push({...a,sc:sc.t+' '+sc.d,v:sc.v})));if(!all.length){alert('No attendees logged.');return;}const h='Name,Outlet,RSVP,Screening,Venue,Notes';const rows=all.map(a=>[a.n,a.o,a.r,a.sc,a.v,a.no].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(','));const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent([h,...rows].join('\n'));a.download=`AllAttendees_${t.title.replace(/[^a-z0-9]/gi,'_')}.csv`;a.click();}
+function expHlDoc(id){const t=SLATE.find(x=>x.id===id),ts=gts(id);if(!ts.hl.length){alert('No highlights logged.');return;}const d=new Date(t.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});let txt=`CAMPAIGN HIGHLIGHTS\n${t.title.toUpperCase()}\nRelease: ${d} · Generated: ${new Date().toLocaleDateString()}\n${'─'.repeat(48)}\n\n`;['press','digital','social','broadcast','general'].forEach(c=>{const items=ts.hl.filter(h=>h.c===c);if(!items.length)return;txt+=`${c.toUpperCase()}\n${'─'.repeat(20)}\n`;items.forEach(h=>{txt+=`${h.d||'—'} · ${h.t}\n${h.dt?'  '+h.dt+'\n':''}\n`;});});const bl=new Blob([txt],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=`Highlights_${t.title.replace(/[^a-z0-9]/gi,'_')}.txt`;a.click();}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-wrap.open').forEach(m=>m.classList.remove('open'));});
+
+// ── INIT ──────────────────────────────────────────────────────────────
+(function(){
+  // Seed TS5 data
+  try{
+    const _d=atob('eyJ0czUiOiB7InRhbGVudCI6IFt7Im4iOiAiVG9tIEhhbmtzIiwgInIiOiAiV29vZHkgKFZvaWNlKSIsICJhIjogIkZ1bGwgYXZhaWxhYmlsaXR5IGJvdGggZGF5cyJ9LCB7Im4iOiAiVGltIEFsbGVuIiwgInIiOiAiQnV6eiBMaWdodHllYXIgKFZvaWNlKSIsICJhIjogIkZ1bGwgYXZhaWxhYmlsaXR5IGJvdGggZGF5cyJ9LCB7Im4iOiAiSm9hbiBDdXNhY2siLCAiciI6ICJKZXNzaWUgKFZvaWNlKSIsICJhIjogIkF2YWlsYWJsZSBEYXkgMSBvbmx5ICg2LzUpIn0sIHsibiI6ICJHcmV0YSBMZWUiLCAiciI6ICJMaWx5cGFkIChWb2ljZSkiLCAiYSI6ICJBdmFpbGFibGUgRGF5IDIgb25seSAoNi82KSJ9LCB7Im4iOiAiTWFyayBOaWVsc2VuIiwgInIiOiAiRGlyZWN0b3IiLCAiYSI6ICJCb3RoIGRheXMsIHByZXNzIGNvbmZlcmVuY2Ugb25seSJ9XSwgInByZXNzIjogW3sibiI6ICJNYXJrIFMuIEFsbGVuIiwgIm8iOiAiVVNBIiwgInQiOiAiUHJpbnQgLyBPbmxpbmUiLCAicm0iOiAiUk9IIiwgIm0iOiAiMTUifSwgeyJuIjogIkRhbmllbGxlIEJyb2Fkd2F5IiwgIm8iOiAiVVNBIiwgInQiOiAiUHJpbnQgLyBPbmxpbmUiLCAicm0iOiAiUk9IIiwgIm0iOiAiMTUifSwgeyJuIjogIkxpc2EgQ2FiZWxsbyIsICJvIjogIlVTQSIsICJ0IjogIlByaW50IC8gT25saW5lIiwgInJtIjogIlJPSCIsICJtIjogIjE1In0sIHsibiI6ICJSaWNrIENhbXBhbmVsbGkiLCAibyI6ICJFVCBDYW5hZGEgLyBFdGFsayIsICJ0IjogIkJyb2FkY2FzdCAvIFRWIiwgInJtIjogIlJPSCIsICJtIjogIjE1In0sIHsibiI6ICJBbGVqYW5kcm8gQ2FycmlsbG8gQ29yZG92YSIsICJvIjogIkNhbmFsIGRlIGxhcyBFc3RyZWxsYXMiLCAidCI6ICJCcm9hZGNhc3QgLyBUViIsICJybSI6ICJST0giLCAibSI6ICIxNSJ9LCB7Im4iOiAiVGFuaWEgQ2hhcnJ5IiwgIm8iOiAiVGVsZW11bmRvIiwgInQiOiAiQnJvYWRjYXN0IC8gVFYiLCAicm0iOiAiUk9IIiwgIm0iOiAiMTUifV0sICJzY2hlZCI6IFtdLCAic2NyZWVuaW5ncyI6IFt7InQiOiAiR2xvYmFsIFByZXNzIEp1bmtldCIsICJkIjogIjIwMjYtMDYtMDUiLCAidGkiOiAiMDg6MDAiLCAidiI6ICJQaXhhciBBbmltYXRpb24gU3R1ZGlvcyIsICJjIjogIkVtZXJ5dmlsbGUgLyBTYW4gRnJhbmNpc2NvLCBDQSIsICJjYXAiOiAiNjYiLCAibiI6ICJFbWJhcmdvIGxpZnRzIG9wZW5pbmcgZGF5IEp1bmUgMTksIDIwMjYiLCAic3QiOiAiY29uZmlybWVkIiwgImF0dCI6IFtdfSwgeyJ0IjogIlByZXNzIFNjcmVlbmluZyIsICJkIjogIjIwMjYtMDYtMDQiLCAidGkiOiAiMTk6MDAiLCAidiI6ICJUaGUgRmFpcm1vbnQgU2FuIEZyYW5jaXNjbyIsICJjIjogIlNhbiBGcmFuY2lzY28sIENBIiwgImNhcCI6ICIxNTAiLCAibiI6ICJJbmR1c3RyeSBzY3JlZW5pbmcgXHUyMDE0IGZ1bGwgZmlsbSIsICJzdCI6ICJjb25maXJtZWQiLCAiYXR0IjogW119XSwgImhsIjogW3siZCI6ICIyMDI2LTA2LTE3IiwgImMiOiAicHJlc3MiLCAidCI6ICJVU0EgVG9kYXkgXHUyMDE0IFwiVG95IFN0b3J5IDUgc3RhcnMgZGlzc2VjdCB0aGUgYmxlc3NpbmcsIGN1cnNlIG9mIHRlY2hcIiIsICJkdCI6ICJUb20gSGFua3MgYW5kIFRpbSBBbGxlbiBmZWF0dXJlIGJ5IEJyaWFuIFRydWl0dC4gU2VjdGlvbiBEIGZyb250IHBhZ2UuIn0sIHsiZCI6ICIyMDI2LTA2LTE2IiwgImMiOiAicHJlc3MiLCAidCI6ICJIb2xseXdvb2QgUmVwb3J0ZXIgXHUyMDE0IFRveSBTdG9yeSA1IGZlYXR1cmUgY292ZXJhZ2UiLCAiZHQiOiAiVHJhZGUgY292ZXJhZ2UgYWhlYWQgb2YgSnVuZSAxOSBvcGVuaW5nLiJ9XSwgImprRGF0ZSI6ICIyMDI2LTA2LTA1IiwgImprVmVudWUiOiAiUGl4YXIgQW5pbWF0aW9uIFN0dWRpb3MiLCAiamtDaXR5IjogIkVtZXJ5dmlsbGUgLyBTYW4gRnJhbmNpc2NvLCBDQSJ9fQ==');
+    const _s=JSON.parse(_d);const st=JSON.parse(localStorage.getItem(K)||'{}');
+    if(!st.ts5||(st.ts5.press||[]).length<3){st.ts5=_s.ts5;localStorage.setItem(K,JSON.stringify(st));}
+  }catch(e){console.error('PGS seed:',e);}
+
+  // Auto-select first active title
+  const active=SLATE.find(t=>t.status==='active');
+  if(active){ct=active.id;updateTitlePill();}
+
+  // Greeting
+  const h=new Date().getHours();
+  const g=h<12?'morning':h<17?'afternoon':'evening';
+  const t=SLATE.find(x=>x.id===ct);
+  addMsg('bot',`Good ${g}, Michael. ${t?`Working on <strong>${t.title}</strong> — what do you need today?`:'Which title are we working on?'}`);
+  if(!ct)addTitleChips();
+  else showIdleChips();
+})();
+</script>
+</body>
+</html>
